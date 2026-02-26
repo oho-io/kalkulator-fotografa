@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalkulator wyceny sesji fotograficznej | Ile wziąć za sesję? 2026</title>
+<meta name="description" content="Bezpłatny kalkulator dla fotografów freelancerów. Oblicz minimalną i rynkową stawkę za sesję uwzględniając ZUS 2026, podatek i realne koszty.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0A0A0A;
+    --surface: #141414;
+    --surface2: #1C1C1C;
+    --text: #F5F5F0;
+    --text2: #6B6B6B;
+    --accent: #E8D5B0;
+    --border: #2A2A2A;
+    --red: #C0392B;
+    --yellow: #D4AC0D;
+    --green: #27AE60;
+    --radius-card: 12px;
+    --radius-input: 8px;
+    --radius-pill: 100px;
+    --transition: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- HERO ---- */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(232,213,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .hero-inner h1 {
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.1;
+  }
+
+  .hero-subtitle {
+    font-size: 17px;
+    color: var(--text2);
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.65;
+  }
+
+  .hero-question {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 20px;
+    letter-spacing: 0.01em;
+  }
+
+  .path-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .path-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 24px 20px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: left;
+    position: relative;
+    user-select: none;
+  }
+
+  .path-card:hover {
+    border-color: rgba(232,213,176,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .path-card:active { transform: scale(0.98); }
+
+  .path-card.selected {
+    border-color: var(--accent);
+    background: rgba(232,213,176,0.05);
+  }
+
+  .path-card .path-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .path-card .path-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .path-card .path-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* ---- MAIN CALCULATOR ---- */
+  #calculator {
+    display: none;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  #calculator.visible { display: block; }
+
+  .calc-layout {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .calc-form { }
+
+  .calc-results {
+    position: sticky;
+    top: 24px;
+  }
+
+  /* SECTIONS */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .field-group { margin-bottom: 16px; }
+
+  .field-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .field-desc {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-wrap input[type="number"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-input);
+    color: var(--text);
+    font-size: 15px;
+    font-family: var(--font);
+    padding: 10px 40px 10px 14px;
+    outline: none;
+    transition: var(--transition);
+    -moz-appearance: textfield;
+  }
+
+  .input-wrap input[type="number"]::-webkit-inner-spin-button,
+  .input-wrap input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .input-wrap input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,213,176,0.12);
+  }
+
+  .input-unit {
+    position: absolute;
+    right: 12px;
+    font-size: 13px;
+    color: var(--text2);
+    pointer-events: none;
+  }
+
+  /* TOOLTIP */
+  .tooltip-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .tooltip-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--text2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text2);
+    cursor: help;
+    flex-shrink: 0;
+    transition: var(--transition);
+  }
+
+  .tooltip-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+  .tooltip-content {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1A1A1A;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    width: 220px;
+    line-height: 1.5;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+
+  .tooltip-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1A1A1A;
+  }
+
+  .tooltip-wrap:hover .tooltip-content { display: block; }
+
+  /* SLIDER */
+  .slider-wrap { margin-bottom: 6px; }
+
+  .slider-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .slider-value {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 3px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 60px;
+    text-align: center;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--text);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    transition: var(--transition);
+    cursor: grab;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px;
+    background: var(--text);
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    cursor: grab;
+  }
+
+  input[type="range"]:focus { outline: none; }
+
+  .cost-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .cost-pill strong { color: var(--accent); font-weight: 600; }
+
+  /* SELECT */
+  .custom-select {
+    position: relative;
+    width: 100%;
+  }
+
+  .custom-select select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-input);
+    color: var(--text);
+    font-size: 15px;
+    font-family: var(--font);
+    padding: 10px 40px 10px 14px;
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition);
+    -webkit-appearance: none;
+  }
+
+  .custom-select select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,213,176,0.12); }
+
+  .custom-select::after {
+    content: '▾';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text2);
+    pointer-events: none;
+    font-size: 12px;
+  }
+
+  /* KAFLE */
+  .kafle {
+    display: grid;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .kafle-3 { grid-template-columns: repeat(3, 1fr); }
+  .kafle-4 { grid-template-columns: repeat(4, 1fr); }
+  .kafle-2 { grid-template-columns: repeat(2, 1fr); }
+
+  .kafel {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    user-select: none;
+  }
+
+  .kafel:hover { border-color: rgba(232,213,176,0.3); transform: translateY(-1px); }
+
+  .kafel.active {
+    border-color: var(--accent);
+    background: rgba(232,213,176,0.07);
+  }
+
+  .kafel:active { transform: scale(0.97); }
+
+  .kafel-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+  .kafel-title { font-size: 12px; font-weight: 600; color: var(--text); }
+  .kafel-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  /* TOGGLE */
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .toggle-label { font-size: 14px; color: var(--text); flex: 1; }
+
+  .toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+  .toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background: var(--text2);
+    border-radius: 50%;
+    transition: var(--transition);
+  }
+
+  .toggle-switch input:checked + .toggle-track { background: var(--accent); }
+  .toggle-switch input:checked + .toggle-track::after {
+    transform: translateX(20px);
+    background: var(--bg);
+  }
+
+  /* OPODATKOWANIE KAFLE */
+  .tax-kafle .kafel { padding: 14px 10px; }
+  .tax-rate { font-size: 18px; font-weight: 700; color: var(--accent); display: block; }
+  .tax-name { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  /* INFO BOXES */
+  .info-box {
+    border-radius: var(--radius-card);
+    padding: 16px;
+    margin-top: 16px;
+    border-left: 3px solid;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .info-box.warning {
+    background: rgba(212,172,13,0.07);
+    border-color: var(--yellow);
+    color: rgba(245,245,240,0.8);
+  }
+
+  .info-box.green {
+    background: rgba(39,174,96,0.07);
+    border-color: var(--green);
+    color: rgba(245,245,240,0.8);
+  }
+
+  .info-box .info-icon { font-size: 16px; margin-right: 6px; }
+
+  .limit-counter {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .limit-ok { color: var(--green); }
+  .limit-over { color: var(--red); }
+
+  /* WYNIKI */
+  .results-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 24px;
+  }
+
+  .results-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 20px;
+  }
+
+  /* VAT TOGGLE */
+  .vat-toggle-wrap {
+    display: flex;
+    gap: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 3px;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+
+  .vat-btn {
+    padding: 6px 20px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    transition: var(--transition);
+    letter-spacing: 0.06em;
+  }
+
+  .vat-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .vat-toggle-wrap.disabled { opacity: 0.35; pointer-events: none; }
+
+  /* RESULT CARDS */
+  .result-card {
+    border: 1px solid var(--border);
+    border-left-width: 2px;
+    border-radius: var(--radius-card);
+    padding: 20px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+  }
+
+  .result-card.minimum { border-left-color: var(--red); }
+  .result-card.rynkowa {
+    border-left-color: var(--yellow);
+    box-shadow: 0 0 40px rgba(232,213,176,0.05);
+  }
+  .result-card.premium { border-left-color: var(--green); }
+
+  .result-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(212,172,13,0.15);
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+  }
+
+  .result-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 4px;
+  }
+
+  .result-sublabel {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 12px;
+  }
+
+  .result-amount {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 12px;
+    transition: var(--transition);
+  }
+
+  .result-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .result-meta span strong { color: var(--text); font-weight: 500; }
+
+  /* HOURLY BLOCK */
+  .hourly-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 16px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+
+  .hourly-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 10px;
+  }
+
+  .hourly-main {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .hourly-compare {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ACCORDION */
+  .accordion {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .accordion-header {
+    padding: 14px 16px;
+    background: var(--surface2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    transition: var(--transition);
+    user-select: none;
+  }
+
+  .accordion-header:hover { color: var(--text); }
+
+  .accordion-arrow {
+    transition: var(--transition);
+    font-style: normal;
+    font-size: 11px;
+  }
+
+  .accordion.open .accordion-arrow { transform: rotate(180deg); }
+
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .accordion.open .accordion-body { max-height: 600px; }
+
+  .accordion-inner {
+    padding: 16px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+  }
+
+  .breakdown-row .val { color: var(--text); font-weight: 500; }
+
+  .breakdown-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 8px 0;
+  }
+
+  .breakdown-total {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* BUTTONS */
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: var(--radius-pill);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    font-family: var(--font);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover { border-color: rgba(232,213,176,0.3); transform: translateY(-1px); }
+
+  /* NOTES */
+  .note {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 6px;
+    line-height: 1.6;
+  }
+
+  /* INPUTS GRID */
+  .inputs-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* FOOTER */
+  .calc-footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--text2);
+    border-top: 1px solid var(--border);
+    max-width: 1100px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .calc-footer a { color: var(--text2); text-decoration: underline; }
+
+  /* FAB (mobile) */
+  .fab {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 14px 20px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    z-index: 50;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    border: none;
+    font-family: var(--font);
+  }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+
+  .section-tax { transition: max-height 0.35s ease, opacity 0.3s ease; overflow: hidden; }
+
+  /* SECTION TRANSITION */
+  #calculator { animation: fadeUp 0.5s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* RESULT ANIMATION */
+  @keyframes countUp { from { opacity: 0.3; } to { opacity: 1; } }
+  .result-amount.updating { animation: countUp 0.15s ease; }
+
+  /* FOCUS */
+  *:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .calc-layout {
+      grid-template-columns: 1fr;
+    }
+    .calc-results {
+      position: static;
+    }
+    .fab { display: flex; }
+    .path-cards { grid-template-columns: 1fr; }
+    .kafle-3, .kafle-4 { grid-template-columns: repeat(2, 1fr); }
+    .inputs-grid-2 { grid-template-columns: 1fr; }
+    .result-amount { font-size: 38px; }
+    #hero h1 { font-size: 32px; }
+  }
+
+  @media (max-width: 480px) {
+    .kafle-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ZUS display */
+  .zus-summary {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text2);
+    display: flex;
+    justify-content: space-between;
+  }
+  .zus-summary strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- HERO / ONBOARDING -->
+<section id="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Kalkulator wyceny · 2026</span>
+    <h1>Ile naprawdę kosztuje<br>Twoja sesja?</h1>
+    <p class="hero-subtitle">Większość fotografów w Polsce pracuje za darmo — nie dlatego że źle fotografują, ale dlatego że źle liczą. To narzędzie to zmienia.</p>
+    <p class="hero-question">Jak pracujesz jako fotograf?</p>
+    <div class="path-cards">
+      <div class="path-card" role="radio" aria-checked="false" tabindex="0" data-path="A" onclick="choosePath('A')" onkeydown="if(event.key==='Enter')choosePath('A')">
+        <span class="path-icon">⚠️</span>
+        <div class="path-title">Bez umowy</div>
+        <div class="path-desc">Nie prowadzę działalności i działam nieformalnie</div>
+      </div>
+      <div class="path-card" role="radio" aria-checked="false" tabindex="0" data-path="B" onclick="choosePath('B')" onkeydown="if(event.key==='Enter')choosePath('B')">
+        <span class="path-icon">🌱</span>
+        <div class="path-title">Nierejestrowana</div>
+        <div class="path-desc">Do 10 813,50 zł na kwartał bez zakładania firmy (2026)</div>
+      </div>
+      <div class="path-card" role="radio" aria-checked="false" tabindex="0" data-path="C" onclick="choosePath('C')" onkeydown="if(event.key==='Enter')choosePath('C')">
+        <span class="path-icon">📸</span>
+        <div class="path-title">JDG</div>
+        <div class="path-desc">Mam zarejestrowaną jednoosobową działalność gospodarczą</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<div id="calculator">
+  <div class="calc-layout">
+    <!-- LEFT: FORM -->
+    <div class="calc-form">
+
+      <!-- SECTION 1: KOSZTY STAŁE -->
+      <div class="section">
+        <span class="section-eyebrow">Krok 1 · Twoje koszty bazowe</span>
+
+        <div class="field-group">
+          <div class="field-label">
+            Amortyzacja sprzętu
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon" aria-label="Informacja">i</span>
+              <div class="tooltip-content" role="tooltip">Podziel wartość sprzętu przez liczbę miesięcy użytkowania. Aparat za 8 000 zł używany 3 lata = ~222 zł/mies.</div>
+            </div>
+          </div>
+          <div class="input-wrap">
+            <input type="number" id="f-amortyzacja" value="400" min="0" max="99999" aria-label="Amortyzacja sprzętu miesięcznie w złotych">
+            <span class="input-unit">zł</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            Oprogramowanie
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon">i</span>
+              <div class="tooltip-content" role="tooltip">Adobe Photography Plan ~130 zł/mies. Capture One ~100 zł/mies. Lightroom itp.</div>
+            </div>
+          </div>
+          <div class="input-wrap">
+            <input type="number" id="f-software" value="150" min="0" max="99999" aria-label="Oprogramowanie miesięcznie w złotych">
+            <span class="input-unit">zł</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            Ubezpieczenie sprzętu
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon">i</span>
+              <div class="tooltip-content" role="tooltip">Warto ubezpieczyć sprzęt od kradzieży i uszkodzeń — ok. 1–2% wartości rocznie.</div>
+            </div>
+          </div>
+          <div class="input-wrap">
+            <input type="number" id="f-ubezpieczenie" value="80" min="0" max="99999" aria-label="Ubezpieczenie sprzętu miesięcznie w złotych">
+            <span class="input-unit">zł</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            Marketing i strona www
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon">i</span>
+              <div class="tooltip-content" role="tooltip">Domena, hosting, reklamy, Pixieset, portfolio, wizytówki.</div>
+            </div>
+          </div>
+          <div class="input-wrap">
+            <input type="number" id="f-marketing" value="100" min="0" max="99999" aria-label="Marketing i strona www miesięcznie w złotych">
+            <span class="input-unit">zł</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            Transport (stały)
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon">i</span>
+              <div class="tooltip-content" role="tooltip">Rata samochodu, paliwo bazowe, bilet miesięczny — koszty stałe, nie per sesja.</div>
+            </div>
+          </div>
+          <div class="input-wrap">
+            <input type="number" id="f-transport" value="150" min="0" max="99999" aria-label="Transport stały miesięcznie w złotych">
+            <span class="input-unit">zł</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            Inne koszty stałe
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon">i</span>
+              <div class="tooltip-content" role="tooltip">Telefon, internet, biuro, akcesoria, kursy, subskrypcje.</div>
+            </div>
+          </div>
+          <div class="input-wrap">
+            <input type="number" id="f-inne-stale" value="150" min="0" max="99999" aria-label="Inne koszty stałe miesięcznie w złotych">
+            <span class="input-unit">zł</span>
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-top:24px">
+          <div class="field-label">Ile sesji robię miesięcznie?</div>
+          <div class="slider-wrap">
+            <div class="slider-header">
+              <span class="field-desc">Liczba płatnych sesji — dzieli Twoje koszty stałe</span>
+              <span class="slider-value" id="val-sesje">8</span>
+            </div>
+            <input type="range" id="f-sesje" min="1" max="20" value="8" aria-label="Liczba sesji miesięcznie" aria-valuemin="1" aria-valuemax="20" aria-valuenow="8">
+          </div>
+        </div>
+
+        <div class="cost-pill">Koszt stały per sesja: <strong id="display-koszt-staly">130 zł</strong></div>
+      </div>
+
+      <!-- SECTION 1B: PODATKI (tylko JDG) -->
+      <div class="section section-tax hidden" id="section-tax">
+        <span class="section-eyebrow">Krok 1B · Twoja sytuacja podatkowa</span>
+
+        <div class="field-group">
+          <div class="field-label" style="margin-bottom:10px">Forma opodatkowania</div>
+          <div class="kafle kafle-3 tax-kafle" id="kafle-tax" role="radiogroup" aria-label="Forma opodatkowania">
+            <div class="kafel active" data-val="skala" role="radio" aria-checked="true" tabindex="0" onclick="setTax('skala')" onkeydown="if(event.key==='Enter')setTax('skala')">
+              <span class="tax-rate">12%</span>
+              <span class="tax-name">Skala podatkowa</span>
+            </div>
+            <div class="kafel" data-val="liniowy" role="radio" aria-checked="false" tabindex="0" onclick="setTax('liniowy')" onkeydown="if(event.key==='Enter')setTax('liniowy')">
+              <span class="tax-rate">19%</span>
+              <span class="tax-name">Podatek liniowy</span>
+            </div>
+            <div class="kafel" data-val="ryczalt" role="radio" aria-checked="false" tabindex="0" onclick="setTax('ryczalt')" onkeydown="if(event.key==='Enter')setTax('ryczalt')">
+              <span class="tax-rate">8,5%</span>
+              <span class="tax-name">Ryczałt</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            Składka ZUS 2026
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon">i</span>
+              <div class="tooltip-content" role="tooltip">Kwoty aktualne na 2026 rok. Podstawa dużego ZUS: 5 652 zł. Składka zdrowotna min. 432,54 zł (9% z 4 806 zł).</div>
+            </div>
+          </div>
+          <div class="custom-select">
+            <select id="f-zus" aria-label="Składka ZUS">
+              <option value="start">Ulga na start — 0 zł społeczne + 432,54 zł zdrowotna = 432,54 zł/mies.</option>
+              <option value="preferencyjny">Preferencyjny ZUS — 456,19 zł + 432,54 zł = 888,73 zł/mies.</option>
+              <option value="maly-plus">Mały ZUS+ (własna kwota) — wpisz poniżej + 432,54 zł zdrowotna</option>
+              <option value="pelny">Pełny ZUS — 1 926,76 zł + 432,54 zł = 2 359,30 zł/mies.</option>
+            </select>
+          </div>
+
+          <div id="maly-plus-wrap" class="hidden" style="margin-top:10px">
+            <div class="field-label">
+              Składki społeczne Mały ZUS+ (zł/mies.)
+              <div class="tooltip-wrap">
+                <span class="tooltip-icon">i</span>
+                <div class="tooltip-content" role="tooltip">Mały ZUS+ zależy od Twojego dochodu z poprzedniego roku. Przy dochodzie ~80 000 zł/rok składki społeczne to ok. 1 040 zł/mies. Wpisz kwotę z Twojego ZUS DRA lub skontaktuj się z księgowym.</div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="f-maly-plus-kwota" value="700" min="0" max="2000" aria-label="Kwota składek społecznych Mały ZUS Plus">
+              <span class="input-unit">zł</span>
+            </div>
+          </div>
+
+          <div class="zus-summary">
+            <span>ZUS per sesja:</span>
+            <strong id="display-zus-per-sesja">54,07 zł</strong>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="toggle-wrap">
+            <span class="toggle-label">Jestem VAT-owcem (VAT 23%)</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="f-vat" role="switch" aria-checked="false">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="note">💡 Kwoty ZUS aktualne na 2026 rok. Składka zdrowotna przy skali podatkowej = 9% dochodu — kalkulator przyjmuje minimum 432,54 zł. Przy wyższych dochodach Twój rzeczywisty koszt będzie wyższy. Skonsultuj z księgowym.</div>
+      </div>
+
+      <!-- SECTION 2: PARAMETRY SESJI -->
+      <div class="section">
+        <span class="section-eyebrow">Krok 2 · Ta konkretna sesja</span>
+
+        <div class="field-group">
+          <div class="field-label">Rodzaj sesji</div>
+          <div class="custom-select">
+            <select id="f-rodzaj" aria-label="Rodzaj sesji">
+              <option value="portretowa">📸 Portretowa / lifestyle</option>
+              <option value="slubna">💍 Ślubna (pełny dzień)</option>
+              <option value="produktowa">📦 Produktowa / packshot</option>
+              <option value="wnetrzarska">🏠 Wnętrzarska</option>
+              <option value="biznesowa">👔 Biznesowa / personal branding</option>
+              <option value="eventowa">🎉 Eventowa / reportaż</option>
+              <option value="noworodkowa">👶 Noworodkowa / rodzinna</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Czas sesji</div>
+          <div class="slider-wrap">
+            <div class="slider-header">
+              <span class="field-desc">Czas spędzony z klientem</span>
+              <span class="slider-value" id="val-czas-sesji">3 h</span>
+            </div>
+            <input type="range" id="f-czas-sesji" min="1" max="12" value="3" aria-label="Czas sesji w godzinach" aria-valuemin="1" aria-valuemax="12" aria-valuenow="3">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Czas edycji</div>
+          <div class="slider-wrap">
+            <div class="slider-header">
+              <span class="field-desc">Postprodukcja i retusz</span>
+              <span class="slider-value" id="val-edycja">3 h</span>
+            </div>
+            <input type="range" id="f-edycja" min="1" max="24" value="3" aria-label="Czas edycji w godzinach" aria-valuemin="1" aria-valuemax="24" aria-valuenow="3">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Dojazd (obie strony)</div>
+          <div class="slider-wrap">
+            <div class="slider-header">
+              <span class="field-desc">Łączny czas dojazdu tam i z powrotem</span>
+              <span class="slider-value" id="val-dojazd-czas">1 h</span>
+            </div>
+            <input type="range" id="f-dojazd-czas" min="0" max="6" value="1" step="0.5" aria-label="Czas dojazdu w godzinach" aria-valuemin="0" aria-valuemax="6" aria-valuenow="1">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            Czas administracyjny
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon">i</span>
+              <div class="tooltip-content" role="tooltip">Czas na maile, umowę, brief z klientem, wystawienie faktury — często ignorowany, a realnie kosztuje.</div>
+            </div>
+          </div>
+          <div class="slider-wrap">
+            <div class="slider-header">
+              <span class="field-desc">Maile, umowy, brief, faktura</span>
+              <span class="slider-value" id="val-admin">1 h</span>
+            </div>
+            <input type="range" id="f-admin" min="0" max="4" value="1" step="0.5" aria-label="Czas administracyjny w godzinach" aria-valuemin="0" aria-valuemax="4" aria-valuenow="1">
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-top:20px">
+          <div class="field-label" style="margin-bottom:10px">Koszty dodatkowe per sesja</div>
+          <div class="inputs-grid-2">
+            <div>
+              <div class="field-desc">Koszt dojazdu (paliwo)</div>
+              <div class="input-wrap">
+                <input type="number" id="f-koszt-dojazdu" value="50" min="0" max="9999" aria-label="Koszt dojazdu per sesja">
+                <span class="input-unit">zł</span>
+              </div>
+            </div>
+            <div>
+              <div class="field-desc">Wynajem studia</div>
+              <div class="input-wrap">
+                <input type="number" id="f-studio" value="0" min="0" max="9999" aria-label="Wynajem studia per sesja">
+                <span class="input-unit">zł</span>
+              </div>
+            </div>
+            <div>
+              <div class="field-desc">Asystent / second shooter</div>
+              <div class="input-wrap">
+                <input type="number" id="f-asystent" value="0" min="0" max="9999" aria-label="Asystent lub second shooter per sesja">
+                <span class="input-unit">zł</span>
+              </div>
+            </div>
+            <div>
+              <div class="field-desc">Inne koszty sesji</div>
+              <div class="input-wrap">
+                <input type="number" id="f-inne-sesja" value="0" min="0" max="9999" aria-label="Inne koszty per sesja">
+                <span class="input-unit">zł</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-top:20px">
+          <div class="field-label" style="margin-bottom:10px">Poziom klienta / prestiż</div>
+          <div class="kafle kafle-3" id="kafle-prestiz" role="radiogroup" aria-label="Poziom klienta">
+            <div class="kafel active" data-val="standard" role="radio" aria-checked="true" tabindex="0" onclick="setPrestiz('standard')" onkeydown="if(event.key==='Enter')setPrestiz('standard')">
+              <span class="kafel-icon">🟦</span>
+              <div class="kafel-title">Standardowy</div>
+              <div class="kafel-sub">×1,0</div>
+            </div>
+            <div class="kafel" data-val="premium" role="radio" aria-checked="false" tabindex="0" onclick="setPrestiz('premium')" onkeydown="if(event.key==='Enter')setPrestiz('premium')">
+              <span class="kafel-icon">🟨</span>
+              <div class="kafel-title">Premium</div>
+              <div class="kafel-sub">×1,4</div>
+            </div>
+            <div class="kafel" data-val="luksusowy" role="radio" aria-checked="false" tabindex="0" onclick="setPrestiz('luksusowy')" onkeydown="if(event.key==='Enter')setPrestiz('luksusowy')">
+              <span class="kafel-icon">🟥</span>
+              <div class="kafel-title">Luksusowy</div>
+              <div class="kafel-sub">×1,9</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: WARTOŚĆ RYNKOWA -->
+      <div class="section">
+        <span class="section-eyebrow">Krok 3 · Twoja pozycja rynkowa</span>
+
+        <div class="field-group">
+          <div class="field-label">Lata doświadczenia</div>
+          <div class="slider-wrap">
+            <div class="slider-header">
+              <span class="field-desc" id="desc-doswiadczenie">Budujesz portfolio</span>
+              <span class="slider-value" id="val-doswiadczenie">0 lat</span>
+            </div>
+            <input type="range" id="f-doswiadczenie" min="0" max="20" value="0" aria-label="Lata doświadczenia" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="toggle-wrap">
+            <span class="toggle-label">
+              Mam jasno określoną niszę
+              <div class="tooltip-wrap" style="display:inline-flex;margin-left:6px;vertical-align:middle">
+                <span class="tooltip-icon">i</span>
+                <div class="tooltip-content" role="tooltip">Np. tylko hotele, tylko produkty kosmetyczne, tylko śluby plenerowe. Specjalizacja = wyższe stawki.</div>
+              </div>
+            </span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="f-nisza" role="switch" aria-checked="false">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="note" style="margin-top:8px">Specjalizacja dodaje +15% do stawki rynkowej i premium</div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label" style="margin-bottom:10px">Lokalizacja</div>
+          <div class="kafle kafle-2" id="kafle-lokalizacja" role="radiogroup" aria-label="Lokalizacja">
+            <div class="kafel" data-val="male" role="radio" aria-checked="false" tabindex="0" onclick="setLokalizacja('male')" onkeydown="if(event.key==='Enter')setLokalizacja('male')">
+              <div class="kafel-title">Małe miasto / wieś</div>
+              <div class="kafel-sub">do 50 tys. · ×0,85</div>
+            </div>
+            <div class="kafel active" data-val="srednie" role="radio" aria-checked="true" tabindex="0" onclick="setLokalizacja('srednie')" onkeydown="if(event.key==='Enter')setLokalizacja('srednie')">
+              <div class="kafel-title">Średnie miasto</div>
+              <div class="kafel-sub">50–200 tys. · ×1,0</div>
+            </div>
+            <div class="kafel" data-val="duze" role="radio" aria-checked="false" tabindex="0" onclick="setLokalizacja('duze')" onkeydown="if(event.key==='Enter')setLokalizacja('duze')">
+              <div class="kafel-title">Duże miasto</div>
+              <div class="kafel-sub">200 tys.+ · ×1,15</div>
+            </div>
+            <div class="kafel" data-val="metro" role="radio" aria-checked="false" tabindex="0" onclick="setLokalizacja('metro')" onkeydown="if(event.key==='Enter')setLokalizacja('metro')">
+              <div class="kafel-title">Warszawa / Kraków / Trójmiasto</div>
+              <div class="kafel-sub">×1,3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div class="calc-results" id="results-panel">
+      <div class="results-section">
+        <div class="results-eyebrow">Twoja wycena</div>
+
+        <!-- VAT TOGGLE -->
+        <div class="vat-toggle-wrap disabled" id="vat-toggle-wrap">
+          <button class="vat-btn active" id="btn-netto" onclick="setVatView('netto')" aria-label="Pokaż ceny netto">NETTO</button>
+          <button class="vat-btn" id="btn-brutto" onclick="setVatView('brutto')" aria-label="Pokaż ceny brutto">BRUTTO</button>
+        </div>
+
+        <!-- RESULT CARDS -->
+        <div class="result-card minimum">
+          <div class="result-label">Minimum</div>
+          <div class="result-sublabel">Pokrywasz koszty, zero zarobku</div>
+          <div class="result-amount" id="r-minimum">0 zł</div>
+          <div class="result-meta">
+            <span>Zarobek: <strong id="r-min-zarobek">0 zł</strong></span>
+            <span>Stawka/h: <strong id="r-min-godz">0 zł/h</strong></span>
+          </div>
+        </div>
+
+        <div class="result-card rynkowa">
+          <span class="result-badge">★ Rekomendowana</span>
+          <div class="result-label">Rynkowa</div>
+          <div class="result-sublabel">Konkurencyjna stawka na polskim rynku</div>
+          <div class="result-amount" id="r-rynkowa">0 zł</div>
+          <div class="result-meta">
+            <span>Zarobek: <strong id="r-ryn-zarobek">0 zł</strong></span>
+            <span>Stawka/h: <strong id="r-ryn-godz">0 zł/h</strong></span>
+          </div>
+        </div>
+
+        <div class="result-card premium">
+          <div class="result-label">Premium</div>
+          <div class="result-sublabel">Dla fotografa z wyraźną marką</div>
+          <div class="result-amount" id="r-premium">0 zł</div>
+          <div class="result-meta">
+            <span>Zarobek: <strong id="r-pre-zarobek">0 zł</strong></span>
+            <span>Stawka/h: <strong id="r-pre-godz">0 zł/h</strong></span>
+          </div>
+        </div>
+
+        <!-- HOURLY BLOCK -->
+        <div class="hourly-block">
+          <div class="hourly-header">🕐 Realna stawka godzinowa</div>
+          <div class="hourly-main" id="r-stawka-h">0 zł/h</div>
+          <div class="hourly-compare">
+            Łączny czas pracy: <span id="r-czas-lacznie">0h</span><br>
+            Minimalne wynagrodzenie 2026: <strong>28,28 zł/h</strong><br>
+            Średnie wynagrodzenie PL: ~58 zł/h
+          </div>
+        </div>
+
+        <!-- INFO BOX (path dependent) -->
+        <div id="info-box-a" class="info-box warning hidden">
+          <span class="info-icon">⚠️</span>
+          <strong>Pracujesz bez umowy.</strong><br>
+          Nie płacisz ZUS ani podatku dochodowego, ale ponosisz ryzyko prawne. Twoja wycena nie uwzględnia tych kosztów. Przy większych przychodach Urząd Skarbowy może zakwestionować brak działalności.
+        </div>
+
+        <div id="info-box-b" class="info-box green hidden">
+          <span class="info-icon">🌱</span>
+          <strong>Nierejestrowana działalność — nowe zasady 2026</strong><br>
+          Od 1 stycznia 2026 limit wynosi <strong>10 813,50 zł brutto na kwartał</strong> (225% płacy minimalnej 4 806 zł). Uwaga: limit liczy się kwartalnie, nie miesięcznie. Po przekroczeniu masz <strong>7 dni</strong> na rejestrację w CEIDG. Nie płacisz ZUS ani VAT dopóki jesteś w limicie.<br>
+          <div class="limit-counter" id="limit-counter"></div>
+        </div>
+
+        <!-- BREAKDOWN ACCORDION -->
+        <div class="accordion" id="accordion-breakdown">
+          <div class="accordion-header" onclick="toggleAccordion()" aria-expanded="false" aria-controls="breakdown-body">
+            <span>Pokaż jak to wyliczyłem</span>
+            <i class="accordion-arrow">▾</i>
+          </div>
+          <div class="accordion-body" id="breakdown-body" role="region">
+            <div class="accordion-inner" id="breakdown-content">
+              <div class="breakdown-row"><span>Koszty stałe per sesja</span><span class="val" id="bd-staly">0 zł</span></div>
+              <div class="breakdown-row"><span>Koszty bezpośrednie sesji</span><span class="val" id="bd-bezposr">0 zł</span></div>
+              <div class="breakdown-row"><span>Wartość czasu (<span id="bd-czas-h">0</span>h × 35 zł)</span><span class="val" id="bd-czas">0 zł</span></div>
+              <div class="breakdown-row hidden" id="bd-zus-row"><span>ZUS per sesja</span><span class="val" id="bd-zus">0 zł</span></div>
+              <div class="breakdown-row hidden" id="bd-podatek-row"><span>Podatek szacunkowy</span><span class="val" id="bd-podatek">0 zł</span></div>
+              <hr class="breakdown-divider">
+              <div class="breakdown-row"><span class="breakdown-total">Koszt minimalny</span><span class="val breakdown-total" id="bd-minimum">0 zł</span></div>
+              <br>
+              <div class="breakdown-row"><span>× Mnożnik rynkowy</span><span class="val">×1,6</span></div>
+              <div class="breakdown-row"><span>× Prestiż klienta</span><span class="val" id="bd-prestiz">×1,0</span></div>
+              <div class="breakdown-row"><span>× Lokalizacja</span><span class="val" id="bd-lokalizacja">×1,0</span></div>
+              <div class="breakdown-row"><span>× Doświadczenie</span><span class="val" id="bd-doswiadczenie">×0,9</span></div>
+              <div class="breakdown-row"><span>× Specjalizacja</span><span class="val" id="bd-nisza">×1,0</span></div>
+              <hr class="breakdown-divider">
+              <div class="breakdown-row"><span class="breakdown-total">Stawka rynkowa</span><span class="val breakdown-total" id="bd-rynkowa">0 zł</span></div>
+              <div class="breakdown-row"><span class="breakdown-total">Stawka premium</span><span class="val breakdown-total" id="bd-premium">0 zł</span></div>
+              <div class="note" style="margin-top:8px">Podatek jest wartością szacunkową — rzeczywista kwota zależy od Twoich rocznych dochodów i odliczeń.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="btn-kopiuj" onclick="kopiujWycene()">📋 Skopiuj wycenę</button>
+          <button class="btn btn-secondary" onclick="resetujKalkulator()">🔄 Resetuj</button>
+        </div>
+
+        <!-- STOPKA -->
+        <div style="margin-top:16px;font-size:11px;color:var(--text2);line-height:1.7;border-top:1px solid var(--border);padding-top:12px">
+          Dane aktualne na 2026 rok · Pełny ZUS: 1 926,76 zł · Min. wynagrodzenie: 4 806 zł · VAT: 23%<br>
+          Kalkulator nie stanowi porady podatkowej ani prawnej. Skonsultuj się z księgowym.
+          <br><span style="color:var(--red)">⚠️</span> Składka zdrowotna przy skali podatkowej = 9% dochodu — kalkulator przyjmuje minimum 432,54 zł.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB (mobile) -->
+<button class="fab hidden" id="fab" onclick="document.getElementById('results-panel').scrollIntoView({behavior:'smooth'})">
+  Zobacz wyniki ↓
+</button>
+
+<script>
+  // STATE
+  const state = {
+    path: null,
+    tax: 'skala',
+    prestiz: 'standard',
+    lokalizacja: 'srednie',
+    vatView: 'netto',
+    vatEnabled: false,
+    zus: 'start',
+    nisza: false,
+    doswiadczenie: 0,
+  };
+
+  // ZUS values 2026
+  const ZUS_VALUES = {
+    'start': { spoleczne: 0, zdrowotna: 432.54 },
+    'preferencyjny': { spoleczne: 456.19, zdrowotna: 432.54 },
+    'maly-plus': { spoleczne: 700, zdrowotna: 432.54 },
+    'pelny': { spoleczne: 1926.76, zdrowotna: 432.54 },
+  };
+
+  const SESSION_DEFAULTS = {
+    portretowa: 3, slubna: 12, produktowa: 5,
+    wnetrzarska: 4, biznesowa: 3, eventowa: 6, noworodkowa: 4,
+  };
+
+  const PRESTIZ_MNOZNIK = { standard: 1.0, premium: 1.4, luksusowy: 1.9 };
+  const LOKALIZACJA_MNOZNIK = { male: 0.85, srednie: 1.0, duze: 1.15, metro: 1.3 };
+  const STAWKA_BAZOWA = 35;
+
+  function choosePath(path) {
+    state.path = path;
+    // Update card styles
+    document.querySelectorAll('.path-card').forEach(c => {
+      c.classList.toggle('selected', c.dataset.path === path);
+      c.setAttribute('aria-checked', c.dataset.path === path ? 'true' : 'false');
+    });
+
+    // Show calculator
+    const calc = document.getElementById('calculator');
+    calc.classList.add('visible');
+
+    // Show/hide tax section
+    const taxSection = document.getElementById('section-tax');
+    if (path === 'C') {
+      taxSection.classList.remove('hidden');
+    } else {
+      taxSection.classList.add('hidden');
+    }
+
+    // Show/hide info boxes
+    document.getElementById('info-box-a').classList.toggle('hidden', path !== 'A');
+    document.getElementById('info-box-b').classList.toggle('hidden', path !== 'B');
+
+    // Scroll to calculator
+    setTimeout(() => {
+      calc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+
+    // Show FAB on mobile
+    if (window.innerWidth < 900) {
+      document.getElementById('fab').classList.remove('hidden');
+    }
+
+    calculate();
+  }
+
+  function setTax(val) {
+    state.tax = val;
+    document.querySelectorAll('#kafle-tax .kafel').forEach(k => {
+      const active = k.dataset.val === val;
+      k.classList.toggle('active', active);
+      k.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+    calculate();
+  }
+
+  function setPrestiz(val) {
+    state.prestiz = val;
+    document.querySelectorAll('#kafle-prestiz .kafel').forEach(k => {
+      const active = k.dataset.val === val;
+      k.classList.toggle('active', active);
+      k.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+    calculate();
+  }
+
+  function setLokalizacja(val) {
+    state.lokalizacja = val;
+    document.querySelectorAll('#kafle-lokalizacja .kafel').forEach(k => {
+      const active = k.dataset.val === val;
+      k.classList.toggle('active', active);
+      k.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+    calculate();
+  }
+
+  function setVatView(val) {
+    state.vatView = val;
+    document.getElementById('btn-netto').classList.toggle('active', val === 'netto');
+    document.getElementById('btn-brutto').classList.toggle('active', val === 'brutto');
+    calculate();
+  }
+
+  function toggleAccordion() {
+    const acc = document.getElementById('accordion-breakdown');
+    const header = acc.querySelector('.accordion-header');
+    const open = acc.classList.toggle('open');
+    header.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function getNum(id) {
+    return parseFloat(document.getElementById(id).value) || 0;
+  }
+
+  function getSlider(id) {
+    return parseFloat(document.getElementById(id).value) || 0;
+  }
+
+  function fmt(n) {
+    return Math.round(n).toLocaleString('pl-PL') + ' zł';
+  }
+
+  function fmtH(n) {
+    return Math.round(n).toLocaleString('pl-PL') + ' zł/h';
+  }
+
+  function mnoznikDoswiadczenie(lat) {
+    if (lat <= 2) return 0.9;
+    if (lat <= 5) return 1.0;
+    if (lat <= 10) return 1.15;
+    return 1.3;
+  }
+
+  let debounceTimer;
+
+  function calculate() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(_calculate, 50);
+  }
+
+  function _calculate() {
+    // INPUTS
+    const amort = getNum('f-amortyzacja');
+    const software = getNum('f-software');
+    const ubezp = getNum('f-ubezpieczenie');
+    const marketing = getNum('f-marketing');
+    const transport = getNum('f-transport');
+    const inneSt = getNum('f-inne-stale');
+    const liczbaSesji = getSlider('f-sesje');
+
+    const czasSesji = getSlider('f-czas-sesji');
+    const edycja = getSlider('f-edycja');
+    const dojazdCzas = getSlider('f-dojazd-czas');
+    const admin = getSlider('f-admin');
+
+    const kosztDojazdu = getNum('f-koszt-dojazdu');
+    const studio = getNum('f-studio');
+    const asystent = getNum('f-asystent');
+    const inneSesja = getNum('f-inne-sesja');
+
+    const lata = getSlider('f-doswiadczenie');
+    const nisza = document.getElementById('f-nisza').checked;
+    const vatEnabled = state.path === 'C' && document.getElementById('f-vat').checked;
+
+    // OBLICZENIA
+    const sumaKosztow = amort + software + ubezp + marketing + transport + inneSt;
+    const kosztStalyPerSesja = sumaKosztow / liczbaSesji;
+    const kosztyBezposrednie = kosztDojazdu + studio + asystent + inneSesja;
+    const czasLacznie = czasSesji + edycja + dojazdCzas + admin;
+    const wartoscCzasu = czasLacznie * STAWKA_BAZOWA;
+
+    // ZUS
+    let zusMiesieczny = 0;
+    let zusSpoleczne = 0;
+    if (state.path === 'C') {
+      const zusType = document.getElementById('f-zus').value;
+      if (zusType === 'maly-plus') {
+        zusSpoleczne = getNum('f-maly-plus-kwota');
+        ZUS_VALUES['maly-plus'].spoleczne = zusSpoleczne;
+      } else {
+        zusSpoleczne = ZUS_VALUES[zusType].spoleczne;
+      }
+      zusMiesieczny = zusSpoleczne + 432.54;
+    }
+    const zusPerSesja = zusMiesieczny / liczbaSesji;
+
+    // PODATEK
+    let podatekPerSesja = 0;
+    if (state.path === 'C') {
+      const przychodPerSesja = 0; // unknown, we estimate
+      // Uproszczony: liczymy podatek od stawki rynkowej
+      // Na potrzeby minimum liczymy od kosztu minimalnego jako przychodu
+      // Szacunkowy: procent od wartości czasu (proxy przychodu netto)
+      const estPrzychod = wartoscCzasu + kosztyBezposrednie + kosztStalyPerSesja;
+      const estDochod = Math.max(0, estPrzychod - kosztyBezposrednie - kosztStalyPerSesja - (zusSpoleczne / liczbaSesji));
+
+      if (state.tax === 'skala') {
+        podatekPerSesja = estDochod * 0.12;
+      } else if (state.tax === 'liniowy') {
+        podatekPerSesja = estDochod * 0.19;
+      } else if (state.tax === 'ryczalt') {
+        podatekPerSesja = estPrzychod * 0.085;
+      }
+    }
+
+    // MINIMUM
+    const minimum = kosztStalyPerSesja + kosztyBezposrednie + wartoscCzasu + zusPerSesja + podatekPerSesja;
+
+    // MNOŻNIKI
+    const mPrestiz = PRESTIZ_MNOZNIK[state.prestiz];
+    const mLok = LOKALIZACJA_MNOZNIK[state.lokalizacja];
+    const mDosw = mnoznikDoswiadczenie(lata);
+    const mNisza = nisza ? 1.15 : 1.0;
+    const mLaczny = mPrestiz * mLok * mDosw * mNisza;
+
+    const rynkowa = minimum * 1.6 * mLaczny;
+    const premiumVal = minimum * 2.4 * mLaczny;
+
+    const zarobek_ryn = rynkowa - minimum;
+    const zarobek_pre = premiumVal - minimum;
+    const stawkaH = czasLacznie > 0 ? rynkowa / czasLacznie : 0;
+
+    // VAT
+    const multiplier = (vatEnabled && state.vatView === 'brutto') ? 1.23 : 1.0;
+    const suffix = (vatEnabled && state.vatView === 'brutto') ? ' brutto' : ' netto';
+
+    // UPDATE UI
+    setResult('r-minimum', minimum * multiplier);
+    setResult('r-rynkowa', rynkowa * multiplier);
+    setResult('r-premium', premiumVal * multiplier);
+
+    document.getElementById('r-min-zarobek').textContent = '0 zł';
+    document.getElementById('r-min-godz').textContent = czasLacznie > 0 ? fmtH(minimum / czasLacznie) : '—';
+    document.getElementById('r-ryn-zarobek').textContent = fmt(zarobek_ryn * multiplier);
+    document.getElementById('r-ryn-godz').textContent = czasLacznie > 0 ? fmtH(rynkowa / czasLacznie) : '—';
+    document.getElementById('r-pre-zarobek').textContent = fmt(zarobek_pre * multiplier);
+    document.getElementById('r-pre-godz').textContent = czasLacznie > 0 ? fmtH(premiumVal / czasLacznie) : '—';
+
+    document.getElementById('r-stawka-h').textContent = czasLacznie > 0 ? fmtH(stawkaH) : '—';
+    document.getElementById('r-czas-lacznie').textContent = czasLacznie + 'h';
+
+    // Pill
+    document.getElementById('display-koszt-staly').textContent = fmt(kosztStalyPerSesja);
+
+    // ZUS per sesja display
+    if (state.path === 'C') {
+      document.getElementById('display-zus-per-sesja').textContent = fmt(zusPerSesja);
+    }
+
+    // VAT toggle
+    const vatToggle = document.getElementById('vat-toggle-wrap');
+    if (vatEnabled) {
+      vatToggle.classList.remove('disabled');
+    } else {
+      vatToggle.classList.add('disabled');
+    }
+
+    // Breakdown
+    document.getElementById('bd-staly').textContent = fmt(kosztStalyPerSesja);
+    document.getElementById('bd-bezposr').textContent = fmt(kosztyBezposrednie);
+    document.getElementById('bd-czas').textContent = fmt(wartoscCzasu);
+    document.getElementById('bd-czas-h').textContent = czasLacznie;
+    document.getElementById('bd-minimum').textContent = fmt(minimum);
+    document.getElementById('bd-rynkowa').textContent = fmt(rynkowa);
+    document.getElementById('bd-premium').textContent = fmt(premiumVal);
+    document.getElementById('bd-prestiz').textContent = '×' + mPrestiz.toFixed(1).replace('.', ',');
+    document.getElementById('bd-lokalizacja').textContent = '×' + mLok.toFixed(2).replace('.', ',');
+    document.getElementById('bd-doswiadczenie').textContent = '×' + mDosw.toFixed(2).replace('.', ',');
+    document.getElementById('bd-nisza').textContent = '×' + mNisza.toFixed(2).replace('.', ',');
+
+    // ZUS & Podatek rows
+    const zusRow = document.getElementById('bd-zus-row');
+    const podatekRow = document.getElementById('bd-podatek-row');
+    if (state.path === 'C') {
+      zusRow.classList.remove('hidden');
+      podatekRow.classList.remove('hidden');
+      document.getElementById('bd-zus').textContent = fmt(zusPerSesja);
+      document.getElementById('bd-podatek').textContent = fmt(podatekPerSesja);
+    } else {
+      zusRow.classList.add('hidden');
+      podatekRow.classList.add('hidden');
+    }
+
+    // Limit nierejestrowanej
+    if (state.path === 'B') {
+      const kwartalny = rynkowa * liczbaSesji * 3;
+      const limitKwartalny = 10813.50;
+      const counter = document.getElementById('limit-counter');
+      const over = kwartalny > limitKwartalny;
+      counter.innerHTML = `Przy <strong>${liczbaSesji}</strong> sesjach/mies. Twój kwartalny przychód: <strong>${fmt(kwartalny)}</strong> → ` +
+        (over
+          ? `<span class="limit-over">⚠️ Przekraczasz limit! Rejestracja CEIDG wymagana w 7 dni od przekroczenia.</span>`
+          : `<span class="limit-ok">✅ W limicie nierejestrowanej (${fmt(limitKwartalny - kwartalny)} zapasu)</span>`);
+    }
+  }
+
+  function setResult(id, val) {
+    const el = document.getElementById(id);
+    el.textContent = fmt(val);
+    el.classList.add('updating');
+    setTimeout(() => el.classList.remove('updating'), 150);
+  }
+
+  // SLIDERS
+  function setupSlider(id, displayId, suffix) {
+    const input = document.getElementById(id);
+    const display = document.getElementById(displayId);
+    function update() {
+      display.textContent = input.value + ' ' + suffix;
+      input.setAttribute('aria-valuenow', input.value);
+      calculate();
+    }
+    input.addEventListener('input', update);
+    update();
+  }
+
+  function setupSliderH(id, displayId) {
+    const input = document.getElementById(id);
+    const display = document.getElementById(displayId);
+    function update() {
+      const v = parseFloat(input.value);
+      display.textContent = v === 1 ? '1 h' : v + ' h';
+      input.setAttribute('aria-valuenow', input.value);
+      calculate();
+    }
+    input.addEventListener('input', update);
+    update();
+  }
+
+  // DOSWIADCZENIE
+  function setupDoswiadczenieSlider() {
+    const input = document.getElementById('f-doswiadczenie');
+    const val = document.getElementById('val-doswiadczenie');
+    const desc = document.getElementById('desc-doswiadczenie');
+    const labels = ['Budujesz portfolio', 'Budujesz portfolio', 'Budujesz portfolio',
+      'Rosnący fotograf', 'Rosnący fotograf', 'Rosnący fotograf',
+      'Doświadczony specjalista', 'Doświadczony specjalista', 'Doświadczony specjalista',
+      'Doświadczony specjalista', 'Doświadczony specjalista', 'Ekspert rynkowy',
+      'Ekspert rynkowy', 'Ekspert rynkowy', 'Ekspert rynkowy', 'Ekspert rynkowy',
+      'Ekspert rynkowy', 'Ekspert rynkowy', 'Ekspert rynkowy', 'Ekspert rynkowy', 'Ekspert rynkowy'];
+    function update() {
+      const v = parseInt(input.value);
+      state.doswiadczenie = v;
+      val.textContent = v === 1 ? '1 rok' : (v === 0 ? '0 lat' : v + ' lat');
+      desc.textContent = labels[v] || 'Ekspert rynkowy';
+      input.setAttribute('aria-valuenow', v);
+      calculate();
+    }
+    input.addEventListener('input', update);
+    update();
+  }
+
+  // RODZAJ SESJI
+  document.getElementById('f-rodzaj').addEventListener('change', function() {
+    const defaults = SESSION_DEFAULTS[this.value] || 3;
+    document.getElementById('f-edycja').value = defaults;
+    document.getElementById('val-edycja').textContent = defaults + ' h';
+    calculate();
+  });
+
+  // ZUS DROPDOWN
+  document.getElementById('f-zus').addEventListener('change', function() {
+    state.zus = this.value;
+    const wrap = document.getElementById('maly-plus-wrap');
+    wrap.classList.toggle('hidden', this.value !== 'maly-plus');
+    calculate();
+  });
+
+  // VAT TOGGLE
+  document.getElementById('f-vat').addEventListener('change', function() {
+    state.vatEnabled = this.checked;
+    this.setAttribute('aria-checked', this.checked ? 'true' : 'false');
+    calculate();
+  });
+
+  // NISZA TOGGLE
+  document.getElementById('f-nisza').addEventListener('change', function() {
+    state.nisza = this.checked;
+    this.setAttribute('aria-checked', this.checked ? 'true' : 'false');
+    calculate();
+  });
+
+  // All number inputs
+  document.querySelectorAll('input[type="number"]').forEach(el => {
+    el.addEventListener('input', calculate);
+  });
+
+  // SETUP SLIDERS
+  setupSlider('f-sesje', 'val-sesje', '');
+  document.getElementById('f-sesje').addEventListener('input', function() {
+    document.getElementById('val-sesje').textContent = this.value;
+    calculate();
+  });
+
+  setupSliderH('f-czas-sesji', 'val-czas-sesji');
+  setupSliderH('f-edycja', 'val-edycja');
+
+  // Dojazd czas
+  const dojazdCzasInput = document.getElementById('f-dojazd-czas');
+  dojazdCzasInput.addEventListener('input', function() {
+    const v = parseFloat(this.value);
+    document.getElementById('val-dojazd-czas').textContent = v + ' h';
+    calculate();
+  });
+
+  // Admin
+  const adminInput = document.getElementById('f-admin');
+  adminInput.addEventListener('input', function() {
+    const v = parseFloat(this.value);
+    document.getElementById('val-admin').textContent = v + ' h';
+    calculate();
+  });
+
+  setupDoswiadczenieSlider();
+
+  // Mały ZUS+ input
+  document.getElementById('f-maly-plus-kwota').addEventListener('input', calculate);
+
+  // KOPIUJ
+  function kopiujWycene() {
+    const btn = document.getElementById('btn-kopiuj');
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('pl-PL');
+    const rodzaj = document.getElementById('f-rodzaj').options[document.getElementById('f-rodzaj').selectedIndex].text.replace(/^[^\w]+/, '').trim();
+
+    const minEl = document.getElementById('r-minimum').textContent;
+    const rynEl = document.getElementById('r-rynkowa').textContent;
+    const preEl = document.getElementById('r-premium').textContent;
+    const hEl = document.getElementById('r-stawka-h').textContent;
+    const czasEl = document.getElementById('r-czas-lacznie').textContent;
+
+    const text = `WYCENA SESJI FOTOGRAFICZNEJ
+Data: ${dateStr}
+Rodzaj: ${rodzaj}
+─────────────────────────
+Stawka minimalna:  ${minEl}
+Stawka rynkowa:    ${rynEl}  ← REKOMENDOWANA
+Stawka premium:    ${preEl}
+─────────────────────────
+Stawka godzinowa:  ${hEl}
+Łączny czas pracy: ${czasEl}
+─────────────────────────
+Wygenerowano: kalkulatorfotografa.pl`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Skopiowano!';
+      btn.style.background = 'var(--green)';
+      btn.style.borderColor = 'var(--green)';
+      setTimeout(() => {
+        btn.innerHTML = '📋 Skopiuj wycenę';
+        btn.style.background = '';
+        btn.style.borderColor = '';
+      }, 2000);
+    }).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✓ Skopiowano!';
+      setTimeout(() => { btn.innerHTML = '📋 Skopiuj wycenę'; }, 2000);
+    });
+  }
+
+  function resetujKalkulator() {
+    // Reset all inputs to defaults
+    document.getElementById('f-amortyzacja').value = 400;
+    document.getElementById('f-software').value = 150;
+    document.getElementById('f-ubezpieczenie').value = 80;
+    document.getElementById('f-marketing').value = 100;
+    document.getElementById('f-transport').value = 150;
+    document.getElementById('f-inne-stale').value = 150;
+    document.getElementById('f-sesje').value = 8;
+    document.getElementById('val-sesje').textContent = '8';
+    document.getElementById('f-czas-sesji').value = 3;
+    document.getElementById('val-czas-sesji').textContent = '3 h';
+    document.getElementById('f-edycja').value = 3;
+    document.getElementById('val-edycja').textContent = '3 h';
+    document.getElementById('f-dojazd-czas').value = 1;
+    document.getElementById('val-dojazd-czas').textContent = '1 h';
+    document.getElementById('f-admin').value = 1;
+    document.getElementById('val-admin').textContent = '1 h';
+    document.getElementById('f-koszt-dojazdu').value = 50;
+    document.getElementById('f-studio').value = 0;
+    document.getElementById('f-asystent').value = 0;
+    document.getElementById('f-inne-sesja').value = 0;
+    document.getElementById('f-doswiadczenie').value = 0;
+    document.getElementById('val-doswiadczenie').textContent = '0 lat';
+    document.getElementById('desc-doswiadczenie').textContent = 'Budujesz portfolio';
+    document.getElementById('f-nisza').checked = false;
+    document.getElementById('f-vat').checked = false;
+    document.getElementById('f-zus').value = 'start';
+    document.getElementById('maly-plus-wrap').classList.add('hidden');
+    document.getElementById('f-rodzaj').value = 'portretowa';
+
+    setPrestiz('standard');
+    setLokalizacja('srednie');
+    if (state.path === 'C') setTax('skala');
+    state.vatView = 'netto';
+    setVatView('netto');
+
+    calculate();
+  }
+
+  // DYNAMIC SLIDER RANGE FILL (visual)
+  function updateSliderFill(input) {
+    const min = parseFloat(input.min) || 0;
+    const max = parseFloat(input.max) || 100;
+    const val = parseFloat(input.value) || 0;
+    const pct = ((val - min) / (max - min)) * 100;
+    input.style.background = `linear-gradient(to right, var(--accent) ${pct}%, var(--border) ${pct}%)`;
+  }
+
+  document.querySelectorAll('input[type="range"]').forEach(input => {
+    input.addEventListener('input', () => updateSliderFill(input));
+    updateSliderFill(input);
+  });
+
+  // INITIAL CALCULATION
+  calculate();
+</script>
+
+<!-- ABOUT SECTION -->
+<section id="o-projekcie" style="max-width:760px;margin:0 auto;padding:64px 24px 96px;border-top:1px solid var(--border)">
+
+  <span style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);display:block;margin-bottom:24px">O tym projekcie</span>
+
+  <h2 style="font-size:clamp(26px,4vw,36px);font-weight:700;letter-spacing:-0.03em;color:var(--text);line-height:1.2;margin-bottom:32px">Jak działa ta wycena — i czego celowo nie liczy</h2>
+
+  <div style="font-size:15px;color:rgba(245,245,240,0.75);line-height:1.85;display:flex;flex-direction:column;gap:24px">
+
+    <p>Kalkulator działa od tyłu. Zamiast pytać "ile chcę zarobić?", zadaje inne pytanie: ile kosztuje wykonanie jednej sesji, zanim w ogóle pomyślisz o zarobku? Większość fotografów wycenia usługę intuicyjnie. Patrzy co ma konkurencja, odejmuje trochę żeby nie odstraszać, i liczy że wyjdzie. Często nie wychodzi.</p>
+
+    <p>Mechanika jest prosta. Sumujemy koszty stałe przypadające na jedną sesję (sprzęt, software, ubezpieczenie, marketing, transport, bo te rzeczy kosztują nawet gdy nie masz ani jednego zlecenia w miesiącu), dodajemy koszty bezpośrednie tej konkretnej sesji, wyceniamy Twój czas według minimalnej stawki 35 zł/h, a w ścieżce JDG dorzucamy ZUS i orientacyjny podatek. To jest <strong style="color:var(--accent)">stawka minimalna</strong>: zero zarobku, tylko pokrycie kosztów. Stawkę rynkową i premium dostajemy mnożąc minimum przez 1,6 i 2,4, a potem korygując przez lokalizację, doświadczenie, specjalizację i poziom klienta.</p>
+
+    <h3 style="font-size:17px;font-weight:600;color:var(--text);margin-top:8px;margin-bottom:4px">Czego kalkulator nie liczy</h3>
+
+    <p>Nie ma tu ani słowa o <strong style="color:var(--text)">licencji</strong>. A to poważna luka. Zdjęcia które oddajesz klientowi to nie tylko czas przy ekranie, to też prawa majątkowe. Sesja produktowa dla sklepu, który będzie używał zdjęć w reklamach przez trzy lata, ma inną wartość niż rodzinna sesja do prywatnego albumu. Licencja na szerokie użycie komercyjne może podwoić wartość zlecenia, i wielu fotografów po prostu tego nie fakturuje, bo nie wie że może. To temat na osobny kalkulator albo na rozmowę z prawnikiem.</p>
+
+    <p>Kalkulator nie pyta też o to, <strong style="color:var(--text)">ile zdjęć klient dostaje</strong>. A to serce oferty. W branży fotograficznej model pakietowy nie jest przypadkiem. Typowa oferta wygląda mniej więcej tak: pakiet Mini (10 zdjęć, ok. 700 zł), pakiet Medium (30 zdjęć, ok. 1200 zł), pakiet Maxi (100 zdjęć, ok. 2000 zł). Klient rzadko porównuje te kwoty z Twoją stawką godzinową, bo jej nie zna. Porównuje pakiety między sobą, a środkowa opcja przy takim zestawieniu prawie zawsze wygląda jak rozsądny wybór. To efekt kotwicy: najdroższa pozycja w zestawieniu staje się punktem odniesienia, który sprawia że środkowy pakiet wydaje się uczciwy. Klienci nie kupują Twojego czasu, kupują konkretną obietnicę: X zdjęć gotowych do daty Y. Stawka godzinowa z kalkulatora to Twój wewnętrzny test, sprawdzenie czy Twoja oferta pakietowa w ogóle ma sens zanim ją opublikujesz.</p>
+
+    <p>Nie ma też mowy o <strong style="color:var(--text)">wideo</strong>. Coraz więcej fotografów kręci, czy to krótkie reelsy z sesji, czy pełne filmy dla hoteli i apartamentów. Produkcja wideo to inny czas pracy, inne oprogramowanie (DaVinci, Premiere, After Effects), inne wymagania sprzętowe i często osobna sesja nagraniowa. Jeśli wideo jest częścią Twojej oferty, licz jego koszty osobno, bo to dwa różne rzemiosła. Na razie możesz użyć tego kalkulatora dla każdego z nich z osobna i porównać wyniki.</p>
+
+    <h3 style="font-size:17px;font-weight:600;color:var(--text);margin-top:8px;margin-bottom:4px">Skąd te liczby</h3>
+
+    <p>Stawka bazowa 35 zł/h to orientacyjne minimum dla polskiego freelancera w 2026, wyraźnie powyżej płacy minimalnej wynoszącej 28,28 zł/h. Mnożnik rynkowy 1,6 oznacza że przy stawce rynkowej zarabiasz ok. 60% ponad kosztem własnym. Tyle zostaje zanim opłacisz swoje życie. Mnożnik premium 2,4 odpowiada poziomowi fotografów z rozpoznawalnym portfolio i stałą bazą klientów, którzy nie muszą tłumaczyć swojej ceny. Mnożniki lokalizacji (od 0,85 dla małych miejscowości do 1,3 dla Warszawy, Krakowa i Trójmiasta) wynikają z realnych różnic w sile nabywczej. Mnożniki doświadczenia (od 0,9 na początku do 1,3 po 11 latach) wynikają z prostego faktu: wartość fotografa rośnie nie tylko z jakością zdjęć, ale z tym ile pewności siebie wkłada w rozmowę o cenie.</p>
+
+    <p>Ten kalkulator nie jest wyrocznią. Daje Ci liczby do rozmowy z klientem, z partnerem biznesowym, z samym sobą. Jeśli Twoja aktualna stawka leży poniżej minimum z kalkulatora, to nie jest sygnał żeby ją natychmiast podnosić. To sygnał żeby wiedzieć dlaczego tak jest i zdecydować świadomie co z tym zrobić. Wyceniać dobrze to nie chciwość, to higiena.</p>
+
+  </div>
+</section>
+
+<!-- LEGAL FOOTER -->
+<footer style="background:var(--surface);border-top:1px solid var(--border);padding:48px 24px;">
+  <div style="max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+
+      <div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:12px">Zastrzeżenie prawne</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7">Kalkulator ma charakter wyłącznie informacyjny i edukacyjny. Wyniki obliczeń są wartościami orientacyjnymi opartymi na publicznie dostępnych danych z 2026 roku. Nie stanowią porady podatkowej, prawnej ani finansowej w rozumieniu obowiązujących przepisów. Przed podjęciem decyzji biznesowych skonsultuj się z licencjonowanym doradcą podatkowym lub księgowym.</p>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:12px">Prywatność i dane</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7">Ten kalkulator nie zbiera, nie przetwarza ani nie przechowuje żadnych danych osobowych. Wszystkie obliczenia wykonywane są lokalnie w Twojej przeglądarce. Kalkulator nie używa plików cookies, narzędzi analitycznych ani skryptów śledzących. Strona hostowana jest na GitHub Pages (Microsoft), który jako dostawca infrastruktury może rejestrować standardowe dane techniczne (np. adresy IP) zgodnie z własną <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" style="color:var(--text2);text-decoration:underline">polityką prywatności</a>.</p>
+      </div>
+
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <span style="font-size:12px;color:var(--text2)">© 2026 · Kalkulator wyceny sesji fotograficznej · Dane aktualne na rok 2026</span>
+      <span style="font-size:12px;color:var(--text2)">Autor nie ponosi odpowiedzialności za decyzje podjęte na podstawie wyników kalkulatora</span>
+    </div>
+
+  </div>
+</footer>
+
+</body>
+</html>
