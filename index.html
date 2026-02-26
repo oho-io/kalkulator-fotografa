@@ -893,7 +893,7 @@
   <div class="hero-inner">
     <span class="eyebrow">Kalkulator wyceny · 2026</span>
     <h1>Ile naprawdę kosztuje<br>Twoja sesja?</h1>
-    <p class="hero-subtitle">Większość fotografów w Polsce pracuje za darmo — nie dlatego że źle fotografują, ale dlatego że źle liczą. To narzędzie to zmienia.</p>
+    <p class="hero-subtitle">Trzy godziny sesji. Sześć godzin edycji. Godzina maili. Wystawiasz fakturę i czujesz się niezręcznie. Ten kalkulator nie wyleczy Twojego syndromu oszusta, ale przynajmniej da Ci punkt odniesienia zamiast przeczucia.</p>
     <p class="hero-question">Jak pracujesz jako fotograf?</p>
     <div class="path-cards">
       <div class="path-card" role="radio" aria-checked="false" tabindex="0" data-path="A" onclick="choosePath('A')" onkeydown="if(event.key==='Enter')choosePath('A')">
@@ -1199,22 +1199,27 @@
         </div>
 
         <div class="field-group" style="margin-top:20px">
-          <div class="field-label" style="margin-bottom:10px">Poziom klienta / prestiż</div>
-          <div class="kafle kafle-3" id="kafle-prestiz" role="radiogroup" aria-label="Poziom klienta">
+          <div class="field-label" style="margin-bottom:10px">Kim jest klient</div>
+          <div class="kafle kafle-4" id="kafle-prestiz" role="radiogroup" aria-label="Budżet klienta">
+            <div class="kafel" data-val="mikro" role="radio" aria-checked="false" tabindex="0" onclick="setPrestiz('mikro')" onkeydown="if(event.key==='Enter')setPrestiz('mikro')">
+              <span class="kafel-icon">⚪</span>
+              <div class="kafel-title">Mikro</div>
+              <div class="kafel-sub">×0,6 · mała pracownia, mały JDG</div>
+            </div>
             <div class="kafel active" data-val="standard" role="radio" aria-checked="true" tabindex="0" onclick="setPrestiz('standard')" onkeydown="if(event.key==='Enter')setPrestiz('standard')">
               <span class="kafel-icon">🟦</span>
               <div class="kafel-title">Standardowy</div>
-              <div class="kafel-sub">×1,0</div>
+              <div class="kafel-sub">×1,0 · typowe zlecenie</div>
             </div>
             <div class="kafel" data-val="premium" role="radio" aria-checked="false" tabindex="0" onclick="setPrestiz('premium')" onkeydown="if(event.key==='Enter')setPrestiz('premium')">
               <span class="kafel-icon">🟨</span>
               <div class="kafel-title">Premium</div>
-              <div class="kafel-sub">×1,4</div>
+              <div class="kafel-sub">×1,4 · wymagający klient</div>
             </div>
             <div class="kafel" data-val="luksusowy" role="radio" aria-checked="false" tabindex="0" onclick="setPrestiz('luksusowy')" onkeydown="if(event.key==='Enter')setPrestiz('luksusowy')">
               <span class="kafel-icon">🟥</span>
               <div class="kafel-title">Luksusowy</div>
-              <div class="kafel-sub">×1,9</div>
+              <div class="kafel-sub">×1,9 · korporacja, hotel, agencja</div>
             </div>
           </div>
         </div>
@@ -1361,7 +1366,7 @@
               <div class="breakdown-row"><span class="breakdown-total">Koszt minimalny</span><span class="val breakdown-total" id="bd-minimum">0 zł</span></div>
               <br>
               <div class="breakdown-row"><span>× Mnożnik rynkowy</span><span class="val">×1,6</span></div>
-              <div class="breakdown-row"><span>× Prestiż klienta</span><span class="val" id="bd-prestiz">×1,0</span></div>
+              <div class="breakdown-row"><span>× Kim jest klient</span><span class="val" id="bd-prestiz">×1,0</span></div>
               <div class="breakdown-row"><span>× Lokalizacja</span><span class="val" id="bd-lokalizacja">×1,0</span></div>
               <div class="breakdown-row"><span>× Doświadczenie</span><span class="val" id="bd-doswiadczenie">×0,9</span></div>
               <div class="breakdown-row"><span>× Specjalizacja</span><span class="val" id="bd-nisza">×1,0</span></div>
@@ -1422,7 +1427,7 @@
     wnetrzarska: 4, biznesowa: 3, eventowa: 6, noworodkowa: 4,
   };
 
-  const PRESTIZ_MNOZNIK = { standard: 1.0, premium: 1.4, luksusowy: 1.9 };
+  const PRESTIZ_MNOZNIK = { mikro: 0.6, standard: 1.0, premium: 1.4, luksusowy: 1.9 };
   const LOKALIZACJA_MNOZNIK = { male: 0.85, srednie: 1.0, duze: 1.15, metro: 1.3 };
   const STAWKA_BAZOWA = 35;
 
