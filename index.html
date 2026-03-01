@@ -108,9 +108,12 @@
 
   .path-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin-top: 8px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .path-card {
@@ -896,11 +899,6 @@
     <p class="hero-subtitle">Trzy godziny sesji. Sześć godzin edycji. Godzina maili. Wystawiasz fakturę i czujesz się niezręcznie. Ten kalkulator nie wyleczy Twojego syndromu oszusta, ale przynajmniej da Ci punkt odniesienia zamiast przeczucia.</p>
     <p class="hero-question">Jak pracujesz jako fotograf?</p>
     <div class="path-cards">
-      <div class="path-card" role="radio" aria-checked="false" tabindex="0" data-path="A" onclick="choosePath('A')" onkeydown="if(event.key==='Enter')choosePath('A')">
-        <span class="path-icon">⚠️</span>
-        <div class="path-title">Bez umowy</div>
-        <div class="path-desc">Nie prowadzę działalności i działam nieformalnie</div>
-      </div>
       <div class="path-card" role="radio" aria-checked="false" tabindex="0" data-path="B" onclick="choosePath('B')" onkeydown="if(event.key==='Enter')choosePath('B')">
         <span class="path-icon">🌱</span>
         <div class="path-title">Nierejestrowana</div>
@@ -1336,17 +1334,17 @@
         </div>
 
         <!-- INFO BOX (path dependent) -->
-        <div id="info-box-a" class="info-box warning hidden">
-          <span class="info-icon">⚠️</span>
-          <strong>Pracujesz bez umowy.</strong><br>
-          Nie płacisz ZUS ani podatku dochodowego, ale ponosisz ryzyko prawne. Twoja wycena nie uwzględnia tych kosztów. Przy większych przychodach Urząd Skarbowy może zakwestionować brak działalności.
-        </div>
-
         <div id="info-box-b" class="info-box green hidden">
           <span class="info-icon">🌱</span>
           <strong>Nierejestrowana działalność — nowe zasady 2026</strong><br>
           Od 1 stycznia 2026 limit wynosi <strong>10 813,50 zł brutto na kwartał</strong> (225% płacy minimalnej 4 806 zł). Uwaga: limit liczy się kwartalnie, nie miesięcznie. Po przekroczeniu masz <strong>7 dni</strong> na rejestrację w CEIDG. Nie płacisz ZUS ani VAT dopóki jesteś w limicie.<br>
           <div class="limit-counter" id="limit-counter"></div>
+        </div>
+
+        <div id="info-box-b-tax" class="info-box warning hidden" style="margin-top:12px">
+          <span class="info-icon">📋</span>
+          <strong>Pamiętaj o podatku na koniec roku.</strong><br>
+          Dochód z nierejestrowanej działalności rozliczasz raz w roku w PIT-36 według skali podatkowej (12% lub 32%). Jeśli Twoje łączne dochody ze wszystkich źródeł przekroczą 30 000 zł kwoty wolnej, zapłacisz podatek dochodowy. Kalkulator tego nie liczy, bo nie zna Twojej pełnej sytuacji podatkowej. Warto to uwzględnić planując ceny.
         </div>
 
         <!-- BREAKDOWN ACCORDION -->
@@ -1452,8 +1450,8 @@
     }
 
     // Show/hide info boxes
-    document.getElementById('info-box-a').classList.toggle('hidden', path !== 'A');
     document.getElementById('info-box-b').classList.toggle('hidden', path !== 'B');
+    document.getElementById('info-box-b-tax').classList.toggle('hidden', path !== 'B');
 
     // Scroll to calculator
     setTimeout(() => {
