@@ -6,6 +6,48 @@
 <title>Kalkulator wyceny sesji fotograficznej | Ile wziąć za sesję? 2026</title>
 <meta name="description" content="Bezpłatny kalkulator dla fotografów freelancerów. Oblicz minimalną i rynkową stawkę za sesję uwzględniając ZUS 2026, podatek i realne koszty.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+<meta name="theme-color" content="#0A0A0A">
+
+<!-- SEO: Canonical URL -->
+<link rel="canonical" href="https://kalkulatorfotografa.pl/">
+
+<!-- Open Graph — podgląd przy udostępnieniu na FB, LinkedIn, Messengerze itp. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kalkulatorfotografa.pl/">
+<meta property="og:title" content="Kalkulator wyceny sesji fotograficznej | Ile wziąć za sesję? 2026">
+<meta property="og:description" content="Bezpłatny kalkulator dla fotografów freelancerów. Oblicz minimalną i rynkową stawkę za sesję uwzględniając ZUS 2026, podatek i realne koszty.">
+<meta property="og:image" content="https://kalkulatorfotografa.pl/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:site_name" content="Kalkulator Fotografa">
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kalkulator wyceny sesji fotograficznej | 2026">
+<meta name="twitter:description" content="Oblicz minimalną i rynkową stawkę za sesję fotograficzną uwzględniając ZUS 2026, podatek i realne koszty. Dla fotografów nierejestrowanych i JDG.">
+<meta name="twitter:image" content="https://kalkulatorfotografa.pl/og-image.png">
+
+<!-- Schema.org — dane strukturalne dla Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Kalkulator wyceny sesji fotograficznej",
+  "description": "Bezpłatny kalkulator dla fotografów freelancerów. Oblicz minimalną i rynkową stawkę za sesję uwzględniając ZUS 2026, podatek i realne koszty.",
+  "url": "https://kalkulatorfotografa.pl/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript.",
+  "inLanguage": "pl-PL",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "PLN"
+  }
+}
+</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -874,6 +916,56 @@
     .kafle-3 { grid-template-columns: 1fr; }
   }
 
+  /* SHARE BAR */
+  .share-bar {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .share-bar.visible { display: flex; }
+
+  .share-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text2);
+    flex-shrink: 0;
+    margin-right: 2px;
+  }
+
+  .share-btn {
+    padding: 6px 13px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text2);
+    font-family: var(--font);
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .share-btn:hover {
+    border-color: rgba(232,213,176,0.4);
+    color: var(--text);
+    transform: translateY(-1px);
+  }
+
+  .share-btn.copied {
+    background: var(--green);
+    color: var(--bg);
+    border-color: var(--green);
+  }
+
   /* ZUS display */
   .zus-summary {
     background: var(--surface2);
@@ -1382,6 +1474,15 @@
           <button class="btn btn-secondary" onclick="resetujKalkulator()">🔄 Resetuj</button>
         </div>
 
+        <!-- Share bar — przyciski otwierają okno platformy, zero zewnętrznych skryptów po naszej stronie -->
+        <div class="share-bar" id="share-bar" role="group" aria-label="Poleć kalkulator znajomym fotografom">
+          <span class="share-label">Poleć:</span>
+          <a class="share-btn" href="#" onclick="shareFB(event)" aria-label="Udostępnij na Facebooku">📘 Facebook</a>
+          <a class="share-btn" href="#" onclick="shareLI(event)" aria-label="Udostępnij na LinkedIn">💼 LinkedIn</a>
+          <a class="share-btn" href="#" onclick="shareX(event)" aria-label="Udostępnij na X / Twitter">𝕏 Twitter</a>
+          <button class="share-btn" id="share-link" onclick="shareLink()" aria-label="Skopiuj link do kalkulatora">🔗 Kopiuj link</button>
+        </div>
+
         <!-- STOPKA -->
         <div style="margin-top:16px;font-size:11px;color:var(--text2);line-height:1.7;border-top:1px solid var(--border);padding-top:12px">
           Dane aktualne na 2026 rok · Pełny ZUS: 1 926,76 zł · Min. wynagrodzenie: 4 806 zł · VAT: 23%<br>
@@ -1463,6 +1564,9 @@
       document.getElementById('fab').classList.remove('hidden');
     }
 
+    // Pokaż share bar po wyborze ścieżki
+    document.getElementById('share-bar').classList.add('visible');
+
     calculate();
   }
 
@@ -1511,7 +1615,7 @@
   }
 
   function getNum(id) {
-    return parseFloat(document.getElementById(id).value) || 0;
+    return Math.max(0, parseFloat(document.getElementById(id).value) || 0);
   }
 
   function getSlider(id) {
@@ -1577,8 +1681,7 @@
     if (state.path === 'C') {
       const zusType = document.getElementById('f-zus').value;
       if (zusType === 'maly-plus') {
-        zusSpoleczne = getNum('f-maly-plus-kwota');
-        ZUS_VALUES['maly-plus'].spoleczne = zusSpoleczne;
+        zusSpoleczne = getNum('f-maly-plus-kwota'); // lokalna zmienna — nie mutujemy globalnego ZUS_VALUES
       } else {
         zusSpoleczne = ZUS_VALUES[zusType].spoleczne;
       }
@@ -1817,6 +1920,54 @@
 
   // Mały ZUS+ input
   document.getElementById('f-maly-plus-kwota').addEventListener('input', calculate);
+
+  // SHARE FUNCTIONS
+  // Każda z funkcji otwiera nowe okno platformy — kalkulator nie ładuje żadnych zewnętrznych skryptów
+  // i nie ustawia żadnych własnych cookies. Zero ryzyka prawnego po naszej stronie.
+  const _SHARE_URL  = 'https://kalkulatorfotografa.pl/';
+  const _SHARE_TEXT = 'Kalkulator dla fotografów — oblicz ile naprawdę kosztuje Twoja sesja (ZUS 2026, podatek, realne koszty):';
+
+  function shareFB(e) {
+    e.preventDefault();
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(_SHARE_URL),
+      '_blank', 'noopener,width=600,height=400'
+    );
+  }
+
+  function shareLI(e) {
+    e.preventDefault();
+    window.open(
+      'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(_SHARE_URL),
+      '_blank', 'noopener,width=600,height=500'
+    );
+  }
+
+  function shareX(e) {
+    e.preventDefault();
+    window.open(
+      'https://twitter.com/intent/tweet?text=' + encodeURIComponent(_SHARE_TEXT + ' ' + _SHARE_URL),
+      '_blank', 'noopener,width=600,height=400'
+    );
+  }
+
+  function shareLink() {
+    const btn = document.getElementById('share-link');
+    const done = () => {
+      btn.textContent = '✓ Skopiowano!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '🔗 Kopiuj link'; btn.classList.remove('copied'); }, 2000);
+    };
+    navigator.clipboard.writeText(_SHARE_URL).then(done).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = _SHARE_URL;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      done();
+    });
+  }
 
   // KOPIUJ
   function kopiujWycene() {
