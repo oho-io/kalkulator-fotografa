@@ -10,6 +10,7 @@
 
 <!-- SEO: Canonical URL -->
 <link rel="canonical" href="https://kalkulatorfotografa.pl/">
+<meta name="google-site-verification" content="Q9tIH5eKWez1uF32JMSEHAfoi2SAVHpL_eRTf5Q4eVY" />
 
 <!-- Open Graph — podgląd przy udostępnieniu na FB, LinkedIn, Messengerze itp. -->
 <meta property="og:type" content="website">
@@ -794,6 +795,7 @@
   /* BUTTONS */
   .action-buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: 4px;
   }
@@ -979,6 +981,25 @@
     justify-content: space-between;
   }
   .zus-summary strong { color: var(--accent); }
+
+
+  /* === FOTO SECTION (zdjęcia + retusz) === */
+  .foto-lacznie {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border-radius: 6px;
+    display: inline-block;
+  }
+  .result-perphoto {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 3px;
+    letter-spacing: 0.01em;
+  }
 </style>
 </head>
 <body>
@@ -1216,14 +1237,32 @@
         </div>
 
         <div class="field-group">
-          <div class="field-label">Czas edycji</div>
-          <div class="slider-wrap">
-            <div class="slider-header">
-              <span class="field-desc">Postprodukcja i retusz</span>
-              <span class="slider-value" id="val-edycja">3 h</span>
+          <div class="field-label">
+            Zdjęcia i retusz
+            <div class="tooltip-wrap">
+              <span class="tooltip-icon">i</span>
+              <div class="tooltip-content" role="tooltip">Kalkulator sam liczy czas retuszu i wlicza go w cenę sesji. Wpisz ile zdjęć oddajesz klientowi i ile czasu zajmuje Ci retusz jednego zdjęcia.</div>
             </div>
-            <input type="range" id="f-edycja" min="1" max="24" value="3" aria-label="Czas edycji w godzinach" aria-valuemin="1" aria-valuemax="24" aria-valuenow="3">
           </div>
+          <div class="inputs-grid-2">
+            <div>
+              <div class="field-desc">Liczba zdjęć do oddania</div>
+              <div class="input-wrap">
+                <input type="number" id="f-foto-ilosc" value="30" min="1" max="9999" placeholder="np. 30" aria-label="Liczba zdjęć do oddania klientowi">
+                <span class="input-unit" style="font-size:11px">zdj.</span>
+              </div>
+            </div>
+            <div>
+              <div class="slider-wrap">
+                <div class="slider-header">
+                  <span class="field-desc">Retusz 1 zdjęcia</span>
+                  <span class="slider-value" id="val-foto-czas">5 min</span>
+                </div>
+                <input type="range" id="f-foto-czas" min="1" max="30" value="5" aria-label="Czas retuszu jednego zdjęcia w minutach" aria-valuemin="1" aria-valuemax="30" aria-valuenow="5">
+              </div>
+            </div>
+          </div>
+          <div class="foto-lacznie" id="foto-lacznie-display">= 2,5 h retuszu wliczone w cenę</div>
         </div>
 
         <div class="field-group">
@@ -1313,6 +1352,7 @@
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- SECTION 3: WARTOŚĆ RYNKOWA -->
@@ -1387,6 +1427,7 @@
           <div class="result-label">Minimum</div>
           <div class="result-sublabel">Pokrywasz koszty, zero zarobku</div>
           <div class="result-amount" id="r-minimum">0 zł</div>
+          <div class="result-perphoto" id="r-min-perphoto" style="display:none"></div>
           <div class="result-meta">
             <span>Zarobek: <strong id="r-min-zarobek">0 zł</strong></span>
             <span>Stawka/h: <strong id="r-min-godz">0 zł/h</strong></span>
@@ -1398,6 +1439,7 @@
           <div class="result-label">Rynkowa</div>
           <div class="result-sublabel">Konkurencyjna stawka na polskim rynku</div>
           <div class="result-amount" id="r-rynkowa">0 zł</div>
+          <div class="result-perphoto" id="r-ryn-perphoto" style="display:none"></div>
           <div class="result-meta">
             <span>Zarobek: <strong id="r-ryn-zarobek">0 zł</strong></span>
             <span>Stawka/h: <strong id="r-ryn-godz">0 zł/h</strong></span>
@@ -1408,6 +1450,7 @@
           <div class="result-label">Premium</div>
           <div class="result-sublabel">Dla fotografa z wyraźną marką</div>
           <div class="result-amount" id="r-premium">0 zł</div>
+          <div class="result-perphoto" id="r-pre-perphoto" style="display:none"></div>
           <div class="result-meta">
             <span>Zarobek: <strong id="r-pre-zarobek">0 zł</strong></span>
             <span>Stawka/h: <strong id="r-pre-godz">0 zł/h</strong></span>
@@ -1470,7 +1513,6 @@
 
         <!-- ACTION BUTTONS -->
         <div class="action-buttons">
-          <button class="btn btn-primary" id="btn-kopiuj" onclick="kopiujWycene()">📋 Skopiuj wycenę</button>
           <button class="btn btn-secondary" onclick="resetujKalkulator()">🔄 Resetuj</button>
         </div>
 
@@ -1480,7 +1522,7 @@
           <a class="share-btn" href="#" onclick="shareFB(event)" aria-label="Udostępnij na Facebooku">📘 Facebook</a>
           <a class="share-btn" href="#" onclick="shareLI(event)" aria-label="Udostępnij na LinkedIn">💼 LinkedIn</a>
           <a class="share-btn" href="#" onclick="shareX(event)" aria-label="Udostępnij na X / Twitter">𝕏 Twitter</a>
-          <button class="share-btn" id="share-link" onclick="shareLink()" aria-label="Skopiuj link do kalkulatora">🔗 Kopiuj link</button>
+          <button class="share-btn" id="share-link" onclick="shareLink()" aria-label="Skopiuj link z Twoją konfiguracją" title="Kopiuje link z Twoimi ustawieniami — wyślij innemu fotografowi">🔗 Link z ustawieniami</button>
         </div>
 
         <!-- STOPKA -->
@@ -1492,6 +1534,7 @@
       </div>
     </div>
   </div>
+
 </div>
 
 <!-- FAB (mobile) -->
@@ -1513,6 +1556,9 @@
     doswiadczenie: 0,
   };
 
+  // Phase 2 globals
+  let _restoring = false;
+
   // ZUS values 2026
   const ZUS_VALUES = {
     'start': { spoleczne: 0, zdrowotna: 432.54 },
@@ -1521,9 +1567,15 @@
     'pelny': { spoleczne: 1926.76, zdrowotna: 432.54 },
   };
 
+  // {ilosc: liczba zdjęć, czas: min/zdjęcie} — ilość × czas / 60 = godziny retuszu
   const SESSION_DEFAULTS = {
-    portretowa: 3, slubna: 12, produktowa: 5,
-    wnetrzarska: 4, biznesowa: 3, eventowa: 6, noworodkowa: 4,
+    portretowa:  { ilosc: 30,  czas: 6  },  // 30 × 6min = 3h
+    slubna:      { ilosc: 120, czas: 6  },  // 120 × 6min = 12h
+    produktowa:  { ilosc: 30,  czas: 10 },  // 30 × 10min = 5h
+    wnetrzarska: { ilosc: 20,  czas: 12 },  // 20 × 12min = 4h
+    biznesowa:   { ilosc: 30,  czas: 6  },  // 30 × 6min = 3h
+    eventowa:    { ilosc: 120, czas: 3  },  // 120 × 3min = 6h
+    noworodkowa: { ilosc: 30,  czas: 8  },  // 30 × 8min = 4h
   };
 
   const PRESTIZ_MNOZNIK = { mikro: 0.6, standard: 1.0, premium: 1.4, luksusowy: 1.9 };
@@ -1655,7 +1707,9 @@
     const liczbaSesji = getSlider('f-sesje');
 
     const czasSesji = getSlider('f-czas-sesji');
-    const edycja = getSlider('f-edycja');
+    const fotoIlosc = getNum('f-foto-ilosc');
+    const fotoMin = getSlider('f-foto-czas');
+    const edycja = (fotoIlosc * fotoMin) / 60;
     const dojazdCzas = getSlider('f-dojazd-czas');
     const admin = getSlider('f-admin');
 
@@ -1797,6 +1851,35 @@
           ? `<span class="limit-over">⚠️ Przekraczasz limit! Rejestracja CEIDG wymagana w 7 dni od przekroczenia.</span>`
           : `<span class="limit-ok">✅ W limicie nierejestrowanej (${fmt(limitKwartalny - kwartalny)} zapasu)</span>`);
     }
+
+    // FOTO-LACZNIE display
+    const fotoDisplay = document.getElementById('foto-lacznie-display');
+    if (fotoDisplay) {
+      const edycjaH = edycja > 0 ? (Math.round(edycja * 10) / 10).toString().replace('.', ',') : '0';
+      fotoDisplay.textContent = '= ' + edycjaH + ' h retuszu wliczone w cenę';
+    }
+
+    // PER-PHOTO PRICE — inline w kartach wyników
+    const ppIds = ['r-min-perphoto', 'r-ryn-perphoto', 'r-pre-perphoto'];
+    if (fotoIlosc > 0) {
+      const ppRates = [
+        Math.round((minimum * multiplier) / fotoIlosc),
+        Math.round((rynkowa * multiplier) / fotoIlosc),
+        Math.round((premiumVal * multiplier) / fotoIlosc),
+      ];
+      ppIds.forEach(function(id, i) {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = ppRates[i] + ' zł / zdj.'; el.style.display = ''; }
+      });
+    } else {
+      ppIds.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+    }
+
+    // Persist state to URL
+    if (!_restoring) serializeState();
   }
 
   function setResult(id, val) {
@@ -1832,6 +1915,19 @@
     update();
   }
 
+  function setupSliderMin(id, displayId) {
+    const input = document.getElementById(id);
+    const display = document.getElementById(displayId);
+    function update() {
+      const v = parseFloat(input.value);
+      display.textContent = v + ' min';
+      input.setAttribute('aria-valuenow', v);
+      calculate();
+    }
+    input.addEventListener('input', update);
+    update();
+  }
+
   // DOSWIADCZENIE
   function setupDoswiadczenieSlider() {
     const input = document.getElementById('f-doswiadczenie');
@@ -1857,9 +1953,13 @@
 
   // RODZAJ SESJI
   document.getElementById('f-rodzaj').addEventListener('change', function() {
-    const defaults = SESSION_DEFAULTS[this.value] || 3;
-    document.getElementById('f-edycja').value = defaults;
-    document.getElementById('val-edycja').textContent = defaults + ' h';
+    const def = SESSION_DEFAULTS[this.value] || { ilosc: 30, czas: 6 };
+    document.getElementById('f-foto-ilosc').value = def.ilosc;
+    const fotoEl = document.getElementById('f-foto-czas');
+    fotoEl.value = def.czas;
+    document.getElementById('val-foto-czas').textContent = def.czas + ' min';
+    fotoEl.setAttribute('aria-valuenow', def.czas);
+    updateSliderFill(fotoEl);
     calculate();
   });
 
@@ -1898,7 +1998,7 @@
   });
 
   setupSliderH('f-czas-sesji', 'val-czas-sesji');
-  setupSliderH('f-edycja', 'val-edycja');
+  setupSliderMin('f-foto-czas', 'val-foto-czas');
 
   // Dojazd czas
   const dojazdCzasInput = document.getElementById('f-dojazd-czas');
@@ -1952,15 +2052,20 @@
   }
 
   function shareLink() {
+    // Kopiuje aktualny URL z zapisanym stanem kalkulatora (URL state persistence)
     const btn = document.getElementById('share-link');
+    const url = window.location.href;
     const done = () => {
-      btn.textContent = '✓ Skopiowano!';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = '🔗 Kopiuj link'; btn.classList.remove('copied'); }, 2000);
+      if (btn) {
+        const orig = btn.textContent;
+        btn.textContent = '✓ Skopiowano!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      }
     };
-    navigator.clipboard.writeText(_SHARE_URL).then(done).catch(() => {
+    navigator.clipboard.writeText(url).then(done).catch(() => {
       const ta = document.createElement('textarea');
-      ta.value = _SHARE_URL;
+      ta.value = url;
       document.body.appendChild(ta);
       ta.select();
       document.execCommand('copy');
@@ -1970,54 +2075,15 @@
   }
 
   // KOPIUJ
-  function kopiujWycene() {
-    const btn = document.getElementById('btn-kopiuj');
-    const today = new Date();
-    const dateStr = today.toLocaleDateString('pl-PL');
-    const rodzaj = document.getElementById('f-rodzaj').options[document.getElementById('f-rodzaj').selectedIndex].text.replace(/^[^\w]+/, '').trim();
-
-    const minEl = document.getElementById('r-minimum').textContent;
-    const rynEl = document.getElementById('r-rynkowa').textContent;
-    const preEl = document.getElementById('r-premium').textContent;
-    const hEl = document.getElementById('r-stawka-h').textContent;
-    const czasEl = document.getElementById('r-czas-lacznie').textContent;
-
-    const text = `WYCENA SESJI FOTOGRAFICZNEJ
-Data: ${dateStr}
-Rodzaj: ${rodzaj}
-─────────────────────────
-Stawka minimalna:  ${minEl}
-Stawka rynkowa:    ${rynEl}  ← REKOMENDOWANA
-Stawka premium:    ${preEl}
-─────────────────────────
-Stawka godzinowa:  ${hEl}
-Łączny czas pracy: ${czasEl}
-─────────────────────────
-Wygenerowano: kalkulatorfotografa.pl`;
-
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = '✓ Skopiowano!';
-      btn.style.background = 'var(--green)';
-      btn.style.borderColor = 'var(--green)';
-      setTimeout(() => {
-        btn.innerHTML = '📋 Skopiuj wycenę';
-        btn.style.background = '';
-        btn.style.borderColor = '';
-      }, 2000);
-    }).catch(() => {
-      // fallback
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      btn.textContent = '✓ Skopiowano!';
-      setTimeout(() => { btn.innerHTML = '📋 Skopiuj wycenę'; }, 2000);
-    });
-  }
+  
 
   function resetujKalkulator() {
+    // Clear URL state
+    try { history.replaceState(null, '', window.location.pathname); } catch(e) { /* iframe — ignoruj */ }
+
+    // Reset package photo count inputs
+
+
     // Reset all inputs to defaults
     document.getElementById('f-amortyzacja').value = 400;
     document.getElementById('f-software').value = 150;
@@ -2029,8 +2095,9 @@ Wygenerowano: kalkulatorfotografa.pl`;
     document.getElementById('val-sesje').textContent = '8';
     document.getElementById('f-czas-sesji').value = 3;
     document.getElementById('val-czas-sesji').textContent = '3 h';
-    document.getElementById('f-edycja').value = 3;
-    document.getElementById('val-edycja').textContent = '3 h';
+    document.getElementById('f-foto-ilosc').value = 30;
+    document.getElementById('f-foto-czas').value = 6;
+    document.getElementById('val-foto-czas').textContent = '6 min';
     document.getElementById('f-dojazd-czas').value = 1;
     document.getElementById('val-dojazd-czas').textContent = '1 h';
     document.getElementById('f-admin').value = 1;
@@ -2053,7 +2120,8 @@ Wygenerowano: kalkulatorfotografa.pl`;
     if (state.path === 'C') setTax('skala');
     state.vatView = 'netto';
     setVatView('netto');
-
+    // Refresh slider fill visuals after programmatic reset
+    document.querySelectorAll('input[type="range"]').forEach(function(input) { updateSliderFill(input); });
     calculate();
   }
 
@@ -2071,8 +2139,129 @@ Wygenerowano: kalkulatorfotografa.pl`;
     updateSliderFill(input);
   });
 
-  // INITIAL CALCULATION
-  calculate();
+  // Event listener for foto-ilosc input
+  const fotoIloscInputEl = document.getElementById('f-foto-ilosc');
+  if (fotoIloscInputEl) fotoIloscInputEl.addEventListener('input', function() { calculate(); });
+
+  // ========== URL STATE PERSISTENCE ==========
+  function serializeState() {
+    if (!state.path) return;
+    const p = new URLSearchParams();
+    p.set('path', state.path);
+    // Form fields
+    const fields = ['amortyzacja','software','ubezpieczenie','marketing','transport',
+      'inne-stale','sesje','czas-sesji','foto-czas','dojazd-czas','admin',
+      'koszt-dojazdu','studio','asystent','inne-sesja','doswiadczenie'];
+    fields.forEach(function(f) {
+      const el = document.getElementById('f-' + f);
+      if (el) p.set(f, el.value);
+    });
+    p.set('rodzaj', document.getElementById('f-rodzaj').value);
+    p.set('prestiz', state.prestiz);
+    p.set('lokalizacja', state.lokalizacja);
+    p.set('nisza', state.nisza ? '1' : '0');
+    p.set('vat', state.vatEnabled ? '1' : '0');
+    p.set('vatview', state.vatView);
+    p.set('zus', state.zus);
+    if (state.zus === 'maly-plus') {
+      p.set('maly-plus-kwota', document.getElementById('f-maly-plus-kwota').value);
+    }
+    if (state.path === 'C') p.set('tax', state.tax);
+    // Package sliders
+    const fotoIloscEl = document.getElementById('f-foto-ilosc');
+    if (fotoIloscEl && fotoIloscEl.value) p.set('foto-ilosc', fotoIloscEl.value);
+    try { history.replaceState(null, '', '?' + p.toString()); } catch(e) { /* iframe / srcdoc — ignoruj */ }
+  }
+
+  function deserializeState() {
+    const p = new URLSearchParams(window.location.search);
+    if (!p.has('path')) return false;
+    const path = p.get('path');
+    if (path !== 'B' && path !== 'C') return false;
+
+    _restoring = true;
+
+    // Form fields
+    const fields = ['amortyzacja','software','ubezpieczenie','marketing','transport',
+      'inne-stale','sesje','czas-sesji','foto-czas','dojazd-czas','admin',
+      'koszt-dojazdu','studio','asystent','inne-sesja','doswiadczenie'];
+    fields.forEach(function(f) {
+      const el = document.getElementById('f-' + f);
+      if (el && p.has(f)) el.value = p.get(f);
+    });
+
+    // Rodzaj sesji
+    if (p.has('rodzaj')) document.getElementById('f-rodzaj').value = p.get('rodzaj');
+
+    // Slider display values
+    const s = document.getElementById('f-sesje');
+    if (s) document.getElementById('val-sesje').textContent = s.value;
+    const cs = document.getElementById('f-czas-sesji');
+    if (cs) document.getElementById('val-czas-sesji').textContent = cs.value + ' h';
+    const fotoCzasEl = document.getElementById('f-foto-czas');
+    if (fotoCzasEl) document.getElementById('val-foto-czas').textContent = fotoCzasEl.value + ' min';
+    const dj = document.getElementById('f-dojazd-czas');
+    if (dj) document.getElementById('val-dojazd-czas').textContent = dj.value + ' h';
+    const adm = document.getElementById('f-admin');
+    if (adm) document.getElementById('val-admin').textContent = adm.value + ' h';
+    const dosw = document.getElementById('f-doswiadczenie');
+    if (dosw) {
+      const v = parseInt(dosw.value);
+      document.getElementById('val-doswiadczenie').textContent = v === 1 ? '1 rok' : v + ' lat';
+    }
+
+    // Toggles
+    if (p.has('nisza')) {
+      const v = p.get('nisza') === '1';
+      document.getElementById('f-nisza').checked = v;
+      state.nisza = v;
+    }
+    if (p.has('vat')) {
+      const v = p.get('vat') === '1';
+      document.getElementById('f-vat').checked = v;
+      state.vatEnabled = v;
+    }
+    if (p.has('vatview')) setVatView(p.get('vatview'));
+
+    // ZUS
+    if (p.has('zus')) {
+      const zusVal = p.get('zus');
+      document.getElementById('f-zus').value = zusVal;
+      state.zus = zusVal;
+      document.getElementById('maly-plus-wrap').classList.toggle('hidden', zusVal !== 'maly-plus');
+      if (zusVal === 'maly-plus' && p.has('maly-plus-kwota')) {
+        document.getElementById('f-maly-plus-kwota').value = p.get('maly-plus-kwota');
+      }
+    }
+
+    // Kafle state (no animation noise)
+    if (p.has('prestiz')) setPrestiz(p.get('prestiz'));
+    if (p.has('lokalizacja')) setLokalizacja(p.get('lokalizacja'));
+    if (p.has('tax') && path === 'C') setTax(p.get('tax'));
+
+    // Package sliders
+    if (p.has('foto-ilosc')) { document.getElementById('f-foto-ilosc').value = p.get('foto-ilosc'); }
+
+    // Update all slider fills
+    document.querySelectorAll('input[type="range"]').forEach(function(input) {
+      updateSliderFill(input);
+    });
+
+    // choosePath triggers calculate() + shows packages section
+    choosePath(path);
+
+    _restoring = false;
+    // Refresh slider fill visuals after programmatic restore
+    document.querySelectorAll('input[type="range"]').forEach(function(input) { updateSliderFill(input); });
+    serializeState(); // normalise URL
+    return true;
+  }
+
+  // ========== PACKAGES ==========
+  // INITIAL CALCULATION + URL RESTORE
+  if (!deserializeState()) {
+    calculate();
+  }
 </script>
 
 <!-- ABOUT SECTION -->
@@ -2092,7 +2281,7 @@ Wygenerowano: kalkulatorfotografa.pl`;
 
     <p>Nie ma tu ani słowa o <strong style="color:var(--text)">licencji</strong>. A to poważna luka. Zdjęcia które oddajesz klientowi to nie tylko czas przy ekranie, to też prawa majątkowe. Sesja produktowa dla sklepu, który będzie używał zdjęć w reklamach przez trzy lata, ma inną wartość niż rodzinna sesja do prywatnego albumu. Licencja na szerokie użycie komercyjne może podwoić wartość zlecenia, i wielu fotografów po prostu tego nie fakturuje, bo nie wie że może. To temat na osobny kalkulator albo na rozmowę z prawnikiem.</p>
 
-    <p>Kalkulator nie pyta też o to, <strong style="color:var(--text)">ile zdjęć klient dostaje</strong>. A to serce oferty. W branży fotograficznej model pakietowy nie jest przypadkiem. Typowa oferta wygląda mniej więcej tak: pakiet Mini (10 zdjęć, ok. 700 zł), pakiet Medium (30 zdjęć, ok. 1200 zł), pakiet Maxi (100 zdjęć, ok. 2000 zł). Klient rzadko porównuje te kwoty z Twoją stawką godzinową, bo jej nie zna. Porównuje pakiety między sobą, a środkowa opcja przy takim zestawieniu prawie zawsze wygląda jak rozsądny wybór. To efekt kotwicy: najdroższa pozycja w zestawieniu staje się punktem odniesienia, który sprawia że środkowy pakiet wydaje się uczciwy. Klienci nie kupują Twojego czasu, kupują konkretną obietnicę: X zdjęć gotowych do daty Y. Stawka godzinowa z kalkulatora to Twój wewnętrzny test, sprawdzenie czy Twoja oferta pakietowa w ogóle ma sens zanim ją opublikujesz.</p>
+    <p>Kalkulator pyta ile zdjęć oddajesz klientowi i ile czasu zajmuje Ci retusz jednego zdjęcia — i na tej podstawie wylicza koszt postprodukcji. Ale jest jeden haczyk, o którym warto wiedzieć: <strong style="color:var(--text)">czas retuszu jest wyceniany według stawki bazowej 35 zł/h</strong>. To celowo konserwatywna wartość — podłoga kosztów, nie docelowe wynagrodzenie. Dlatego różnica między pakietem 10 a 100 zdjęć może wyglądać zaskakująco skromnie. Jeśli tak masz, zadaj sobie pytanie: ile chcę zarabiać na godzinie pracy przy ekranie? Selekcja, korekcja kolorów, retusz, eksport — to praca twórcza i techniczna zarazem. Jeśli Twoja odpowiedź jest wyraźnie wyższa niż 35 zł/h, masz już wskazówkę co robić z pakietami.</p>
 
     <p>Nie ma też mowy o <strong style="color:var(--text)">wideo</strong>. Coraz więcej fotografów kręci, czy to krótkie reelsy z sesji, czy pełne filmy dla hoteli i apartamentów. Produkcja wideo to inny czas pracy, inne oprogramowanie (DaVinci, Premiere, After Effects), inne wymagania sprzętowe i często osobna sesja nagraniowa. Jeśli wideo jest częścią Twojej oferty, licz jego koszty osobno, bo to dwa różne rzemiosła. Na razie możesz użyć tego kalkulatora dla każdego z nich z osobna i porównać wyniki.</p>
 
